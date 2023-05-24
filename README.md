@@ -49,14 +49,19 @@ On the privade node, activate a compute environment that has all software instal
 Start a byobu session
   
 `byobu`
+
   
-## Warming up inspect the reads
+
+  
   
 ## The study system
  
 See presentation slides by Henrique Leitao
   
-## Read aligment
+## Read aligment 
+  
+  ### Preparation
+  
 [If not already done] Create a folder `<firstname_lastname>` in `/scratch/antwerpen/grp/aomicscourse`
  
   <details>
@@ -69,17 +74,117 @@ See presentation slides by Henrique Leitao
     
   </details>
   
-  Copy the reads into your folder
+  
+  You will receive reads of the follwing 20 samples
+  
+  ```
+  HC_21_002
+  HC_21_007
+  HC_21_010
+  HC_21_019
+  HC_21_024
+  HC_21_032
+  HC_21_088
+  HC_21_093
+  HC_21_095
+  HC_21_103
+  HC_22_025
+  HC_22_040
+  HC_22_049
+  HC_22_054
+  HC_22_126
+  HC_22_130
+  HC_22_132
+  HC_22_134
+  HC_22_141
+  HC_22_225
+  ```
+  
+  The sequencing reads for these samples are in the folder
+  
+  `/scratch/antwerpen/grp/aomicscourse/genomics_activity/alignment_variant_calling/reads`
+  
+  Assign the samples to different group members, so that each of you gets a fair share. For example, if there are 4 students, each should run the alignments for five (different) samples.
+  
+  Create symbolic links to the read files of your samples in your own folder.
   
    <details>
     <summary>Show me how to do this.</summary>
     
     
-    cp ../genomics_activity/alignment_variant_calling/reads/HC_21_002.*
-    
+    cd /scratch/antwerpen/grp/aomicscourse/<firstname_lastname>
+    #do this for each of your samples
+    ln -s ../genomics_activity/alignment_variant_calling/reads/<my_sample.1.fq> <my_sample.1.fq>
+    ln -s ../genomics_activity/alignment_variant_calling/reads/<my_sample.2.fq> <my_sample.2.fq>
     
   </details>
   
+  Create symbolic links to the reference genome folder `/scratch/antwerpen/grp/aomicscourse/genomics_activity/alignment_variant_calling/reference` in your own folder.
   
+ <details>
+  <summary>Show me how to do this.</summary>
+
+
+    cd /scratch/antwerpen/grp/aomicscourse/<firstname_lastname>
+    ln -s ../genomics_activity/alignment_variant_calling/reference reference
+
+ </details>
+     
+ ### Inspecting the input data
+
+ Inspect the read files. 
+
+ How many reads are there per sample?
+
+ <details>
+  <summary>Show me how to do this.</summary>
+
+    #Count number of lines
+    wc -l *.fq
+         1007884 HC_21_002.1.fq
+         1009552 HC_21_002.2.fq
+          238448 HC_21_007.1.fq
+          239436 HC_21_007.2.fq
+          286836 HC_21_010.1.fq
+          286660 HC_21_010.2.fq
+          241872 HC_21_019.1.fq
+          242180 HC_21_019.2.fq
+          100992 HC_21_024.1.fq
+          101656 HC_21_024.2.fq
+          412384 HC_21_032.1.fq
+          415936 HC_21_032.2.fq
+          660088 HC_21_088.1.fq
+          663200 HC_21_088.2.fq
+          881092 HC_21_093.1.fq
+          882908 HC_21_093.2.fq
+          858476 HC_21_095.1.fq
+          861504 HC_21_095.2.fq
+          712864 HC_21_103.1.fq
+          714756 HC_21_103.2.fq
+          624988 HC_22_025.1.fq
+          624972 HC_22_025.2.fq
+          590432 HC_22_040.1.fq
+          591336 HC_22_040.2.fq
+          680228 HC_22_049.1.fq
+          679940 HC_22_049.2.fq
+          673452 HC_22_054.1.fq
+          674240 HC_22_054.2.fq
+          699404 HC_22_126.1.fq
+          700336 HC_22_126.2.fq
+          605916 HC_22_130.1.fq
+          606204 HC_22_130.2.fq
+          661068 HC_22_132.1.fq
+          662304 HC_22_132.2.fq
+          644288 HC_22_134.1.fq
+          644504 HC_22_134.2.fq
+          563280 HC_22_141.1.fq
+          563164 HC_22_141.2.fq
+          684992 HC_22_225.1.fq
+          684816 HC_22_225.2.fq
+        23678588 total
+   
+    #To get the read numbers, you need to divide the line numbers by 4!
+ </details> 
+    
 
 
