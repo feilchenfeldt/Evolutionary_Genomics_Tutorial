@@ -246,9 +246,27 @@ Try to interpret the resulting .html files. The base qualty and read length plot
 ## Aligning the reads
 For read alignment we will use the `mem` algorithm of the program [`bwa`](https://bio-bwa.sourceforge.net/).   
 
-
+Check to options of `bwa mem` by typing `bwa mem` into the shell.
+  
+Use bwa to align each of your samples against the reference genome. You can use 4 threads per sample to speed up the alignment.
    
+<details>
+  <summary>Show me how to do this.</summary>
 
+    bwa mem -t 4 reference/HC_reference.fa <sample_id>.1.fq <sample_id>.2.fq > <sample_id>.sam
+    
+  
+</details>
 
+Inspect the resulting samfiles using `less` or `head`. Are the reads sorted?
+  
+Sort fix mate information and sort reads using samtools.
+  ```
+  samtools fixmate -m -u <sample_id>.sam - | samtools sort > <sample_id>.sorted.bam
+  ```
+Check that the resulting binary alignment (bam) file is sorted. Note: You cannot inspect binary files directly with `less` or `head`. You need to use `samtools view`, e.g.,
+  ```
+  samtools view -h <sample_id>.sorted.bam | less -S
+  ```
 
-
+## Variant calling
