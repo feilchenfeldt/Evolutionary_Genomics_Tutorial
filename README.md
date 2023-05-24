@@ -132,7 +132,7 @@ See presentation slides by Henrique Leitao
      
  ### Inspecting the input data
 
- Inspect the read files. 
+ ####Inspect the read files. 
 
  How many reads are there per sample?
 
@@ -186,5 +186,69 @@ See presentation slides by Henrique Leitao
     #To get the read numbers, you need to divide the line numbers by 4!
  </details> 
     
+What is the read length? Do all reads have the same length?
+   
+####Inspect the reference genome.
+   
+How many chromosomes does the reference genome have, what are their names?
+   
+Hint: Use the command `grep` to search for header lines. See `grep --help`
+
+<details>
+  <summary>Show me how to do this.</summary>
+
+    grep '>' reference/HC_reference.fa
+ 
+  Note: The '' around the greater than is really important, because we search for a litteral greater than symbol in the file. We do not want bash to interpret this as a file redirection symbol.
+    
+  
+
+</details>
+  
+What is the size of each chromosome?
+   
+Hint: Inspect the text file `reference/HC_reference.fa.dict`
+   
+Try to blast a bit of the reference genome against the NCBI database. Can you confirm which organism it is from?
+
+   https://blast.ncbi.nlm.nih.gov/   
+
+### Running QC on the read files
+To check the quality of the reads, we will use a program called [fastqc](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) 
+
+Run `fastqc --help`
+
+To run QC, create a folder for the output inside your folder
+  mkdir read_QC
+
+Then run
+   fastqc -o read_QC *.fq
+
+Once this is finished, copy the resulting read_QC/*.html files to your local computer and inspect them in a web browser.
+   
+
+<details>
+  <summary>Show me how to do this.</summary>
+
+  - On Windows:
+    Drag and drop files using MobaXterm
+  - On Mac/Linux:
+    Copy files with
+      ```
+      scp -i ~/.ssh/<private_key_file> <vsc_username>@login1-leibniz.hpc.uantwerpen.be:/scratch/antwerpen/grp/aomicscourse/<firstname_lastname>/read_QC/*.html .
+      ```
+  
+
+</details>
+   
+Try to interpret the resulting .html files. The base qualty and read length plots are the most important. Don't spend too much time on the others.
+
+## Aligning the reads
+For read alignment we will use the `mem` algorithm of the program [`bwa`](https://bio-bwa.sourceforge.net/).   
+
+
+   
+
+
 
 
