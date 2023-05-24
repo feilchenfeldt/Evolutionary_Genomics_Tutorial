@@ -36,13 +36,50 @@ Connect to leibniz the way that you have learned it, e.g.,
 
 `ssh -i <path_to_key_file> <username>@login1-leibniz.hpc.uantwerpen.be`
 
-Note that things in <> should be replaced by the value approapriate for your case, e.g., <username> could be replaced by your vscXXXX username. On windows, use MobaXterm to establish connection.
+Note that things in <> should be replaced by the value approapriate for your case, e.g., <username> could be replaced by your vscXXXX username. On windows, use MobaXterm to establish connection. Hint: your key file is likely located in a hidden subfolder of your home folder: `~/.ssh/`
   
 Once on the leibniz login node, connect to our private node (*r0c03cn1*)
 
 `ssh r0c03cn1`
   
-On the private node, start a jupyter notebook server. In the command below, make
-
+On the privade node, activate a compute environment that has all software installed that we will need.
+  
+`/data/antwerpen/grp/asvardal/miniconda3/bin/conda activate`
+  
+Start a byobu session
+  
+`byobu`
+  
+## Warming up inspect the reads
+  
+## The study system
+ 
+See presentation slides by Henrique Leitao
+  
+## Read aligment
+[If not already done] Create a folder `<firstname_lastname>` in `/scratch/antwerpen/grp/aomicscourse`
+ 
+  <details>
+    <summary>Show me how to do this.</summary>
+    
+    
+    cd /scratch/antwerpen/grp/aomicscourse
+    mkdir max_mustermann
+    
+    
+  </details>
+  
+  Copy the reads into your folder
+  
+   <details>
+    <summary>Show me how to do this.</summary>
+    
+    
+    cp ../genomics_activity/alignment_variant_calling/reads/HC_21_002.*
+    
+    
+  </details>
+  
+  
 
 
