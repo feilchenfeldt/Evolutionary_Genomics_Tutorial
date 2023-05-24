@@ -132,7 +132,7 @@ See presentation slides by Henrique Leitao
      
  ### Inspecting the input data
 
- ####Inspect the read files. 
+ #### Inspect the read files. 
 
  How many reads are there per sample?
 
@@ -188,7 +188,7 @@ See presentation slides by Henrique Leitao
     
 What is the read length? Do all reads have the same length?
    
-####Inspect the reference genome.
+#### Inspect the reference genome.
    
 How many chromosomes does the reference genome have, what are their names?
    
@@ -260,13 +260,94 @@ Use bwa to align each of your samples against the reference genome. You can use 
 
 Inspect the resulting samfiles using `less` or `head`. Are the reads sorted?
   
-Sort fix mate information and sort reads using samtools.
+Sort fix mate information and sort reads using samtools and index the sorted alignments.
   ```
   samtools fixmate -m -u <sample_id>.sam - | samtools sort > <sample_id>.sorted.bam
+  samtools index <sample_id>.sorted.bam
   ```
 Check that the resulting binary alignment (bam) file is sorted. Note: You cannot inspect binary files directly with `less` or `head`. You need to use `samtools view`, e.g.,
   ```
   samtools view -h <sample_id>.sorted.bam | less -S
   ```
+### QC on the alignments
+Run `samtools flagstat` to get some quick QC on the alignments.
+  
+<details>
+  <summary>Show me how to do this.</summary>
 
+    samtools flagstat <sample_id>.sorted.bam
+    
+  
+</details>
+  
+What percentage of reads mapped for each sample? What percentage is properly paired?
+  
 ## Variant calling
+
+We will use `bcftools` to call variants. Each of you should now call variants for all samples jointly, including the ones aligned by your colleagues. However, each of you should call variants for a different chromosome!
+  
+So first, coordinate with your colleagues who has which read files, and either create symlinks to them or reference them directly in the calling command.
+  
+The calling command is a two step command. `bcftools mpileup` creates information about all reads at each position. `bcftools call` then determines variants. The overall structure of the command is as follows:
+  ```
+  bcftools mpileup --regions {chromosome} -f {reference.fa} {sample1.bam} .. {sampleN.bam} | bcftools call -mv - > {output.vcf}
+  ```
+  
+ Make sure to use all 20 samples in the calling! Can you adapt this for your case?
+  
+ <details>
+  <summary>Show me how to do this.</summary>
+    #Say I wanted to run this on chr14
+    bcftools mpileup --regions chr14 -f reference/HC_reference.fa *.sorted.bam ../first_colleague/*.sorted.bam ../second_colleague/*.sorted.bam ../third_colleague/*.sorted.bam | bcftools call -mv - > variants.raw.vcf
+  
+  Note: This relies on all colleagues having all the right files present. This might be a dangerous assumtions. It would be safer to reference the path to the .sorted.bam files for each sample explictly. 
+    
+  
+</details>
+
+  Inspect the resulting vcf file. Which type of variants does it contain? How many SNPs does it contain? 
+  
+  Which INFO annotations does the VCF file contain? What is the meaning of MQ and MQ0F
+  
+  ### Variant filtering
+  
+  Lets mark some snps as 'bad' based on information in the vcf file. Specifically, we want to flag SNPs with a phred quality score of less than 20, and SNPs with an average mapping quality of <50. We want to mark these potential problems in the FILTER column of the vcf, but we do not yet want to exclude these SNPs from the file. This is called soft filtering.
+  
+  The commands for this are as follows
+  
+    
+    bcftools filter --exclude 'QUAL<20' --soft-filter LowQual  variants.raw.vcf > variants.filter1.vcf
+    bcftools filter --exclude 'MQ<50' --soft-filter BadMapping  variants.filter1.vcf > variants.filter.vcf
+    
+      
+    
+  Can you run this more efficiently by using a pipe `|`?
+  
+  <details>
+    <summary>Show me how to do this.</summary>
+    
+    
+    bcftools filter --exclude 'QUAL<20' --soft-filter LowQual  variants.raw.vcf | bcftools filter --exclude 'MQ<50' --soft-filter BadMapping > variants.filter.vcf
+    
+    
+  
+ </details>
+      
+  ### VCF file subsetting
+  
+  bcftools is an extremely powerful tool. Try to use `bcftools view` to create a vcf of biallelic snps that passed all filters.
+
+  Check the options and examples here: https://samtools.github.io/bcftools/bcftools.html#view
+  Or type `bcftools view` to see concise explanations.
+      
+  <details>
+   <summary>Show me how to do this.</summary>
+    
+    
+      bcftools view --max-alleles 2 --types snps  --apply-filters PASS variants.filter.vcf > snps.pass.biallelic.vcf
+  
+  </details>
+    
+      
+      
+ 
