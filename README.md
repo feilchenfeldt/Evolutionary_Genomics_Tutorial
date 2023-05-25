@@ -109,7 +109,7 @@ See presentation slides by Henrique Leitao
   Create symbolic links to the read files of your samples in your own folder.
   
    <details>
-    <summary>Show me how to do this.</summary>
+    <summary>1. Show me how to do this.</summary>
     
     
     cd /scratch/antwerpen/grp/aomicscourse/<firstname_lastname>
@@ -122,7 +122,7 @@ See presentation slides by Henrique Leitao
   Create symbolic links to the reference genome folder `/scratch/antwerpen/grp/aomicscourse/genomics_activity/alignment_variant_calling/reference` in your own folder.
   
  <details>
-  <summary>Show me how to do this.</summary>
+  <summary>2. Show me how to do this.</summary>
 
 
     cd /scratch/antwerpen/grp/aomicscourse/<firstname_lastname>
@@ -137,7 +137,7 @@ See presentation slides by Henrique Leitao
  How many reads are there per sample?
 
  <details>
-  <summary>Show me how to do this.</summary>
+  <summary>3. Show me how to do this.</summary>
 
     #Count number of lines
     wc -l *.fq
@@ -195,7 +195,7 @@ How many chromosomes does the reference genome have, what are their names?
 Hint: Use the command `grep` to search for header lines. See `grep --help`
 
 <details>
-  <summary>Show me how to do this.</summary>
+  <summary>4. Show me how to do this.</summary>
 
     grep '>' reference/HC_reference.fa
  
@@ -228,7 +228,7 @@ Once this is finished, copy the resulting read_QC/*.html files to your local com
    
 
 <details>
-  <summary>Show me how to do this.</summary>
+  <summary>5. Show me how to do this.</summary>
 
   - On Windows:
     Drag and drop files using MobaXterm
@@ -251,7 +251,7 @@ Check to options of `bwa mem` by typing `bwa mem` into the shell.
 Use bwa to align each of your samples against the reference genome. You can use 4 threads per sample to speed up the alignment.
    
 <details>
-  <summary>Show me how to do this.</summary>
+  <summary>6. Show me how to do this.</summary>
 
     bwa mem -t 4 reference/HC_reference.fa <sample_id>.1.fq <sample_id>.2.fq > <sample_id>.sam
     
@@ -273,7 +273,7 @@ Check that the resulting binary alignment (bam) file is sorted. Note: You cannot
 Run `samtools flagstat` to get some quick QC on the alignments.
   
 <details>
-  <summary>Show me how to do this.</summary>
+  <summary>7. Show me how to do this.</summary>
 
     samtools flagstat <sample_id>.sorted.bam
     
@@ -296,7 +296,7 @@ The calling command is a two step command. `bcftools mpileup` creates informatio
  Make sure to use all 20 samples in the calling! Can you adapt this for your case?
   
  <details>
-  <summary>Show me how to do this.</summary>
+  <summary>8. Show me how to do this.</summary>
     #Say I wanted to run this on chr14
     bcftools mpileup --regions chr14 -f reference/HC_reference.fa *.sorted.bam ../first_colleague/*.sorted.bam ../second_colleague/*.sorted.bam ../third_colleague/*.sorted.bam | bcftools call -mv - > variants.raw.vcf
   
@@ -324,7 +324,7 @@ The calling command is a two step command. `bcftools mpileup` creates informatio
   Can you run this more efficiently by using a pipe `|`?
   
   <details>
-    <summary>Show me how to do this.</summary>
+    <summary>9. Show me how to do this.</summary>
     
     
     bcftools filter --exclude 'QUAL<20' --soft-filter LowQual  variants.raw.vcf | bcftools filter --exclude 'MQ<50' --soft-filter BadMapping > variants.filter.vcf
@@ -341,7 +341,7 @@ The calling command is a two step command. `bcftools mpileup` creates informatio
   Or type `bcftools view` to see concise explanations.
       
   <details>
-   <summary>Show me how to do this.</summary>
+   <summary>10. Show me how to do this.</summary>
     
     
       bcftools view --max-alleles 2 --types snps  --apply-filters PASS variants.filter.vcf > snps.pass.biallelic.vcf
