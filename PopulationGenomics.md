@@ -38,7 +38,9 @@ Note: the flag `--double-id` is needed by plink to allow for underscore characte
 
 Use `ls -tr` to display files in the directory with the most recently changed files displayed at the bottom. Which files were produced? Inspect the files using `cat`. 
 
-Load the distance matrix into `R` and plot it with the the sample names next to it. Which samples Are most closely related. Which samples do you think are from the same population? Are the results for the different chromosomes consistent?
+Load the distance matrix into `R` and plot it with the the sample names next to it. Which samples Are most closely related. Which samples do you think are from the same population? Specifically, there should be two populations with four samples each, can you identify them?
+
+Are the results for the different chromosomes consistent?
 
 ## Building a tree of genetic relationships (phylogeny)
 
@@ -49,7 +51,7 @@ Alexandros will show you how to construct a neighbour joining tree from the pair
 Also load the metadata file into R. This table gives information on the samples such as sampling location, sex, etc. Inspect this file.
 
 Use the metadata to annotate samples in the tree by sampling location. Do samples cluster by sampling location/population?
-
+`
 ## Principle component analysis (PCA)
 
 Principal component analysis (PCA) is a useful tool to identify sample relationships/populations. Genetic variation between samples is projected in lower dimensional space. Admixed populations can appear as "smear" between parent populations.
@@ -63,5 +65,35 @@ Use `ls -tr` to display files in the directory with the most recently changed fi
 Use `R` to plot the PCA and discuss the results.
 
 Sometimes it makes sense to remove rare SNPs (SNPs where only a few individuals are different from the rest) from the PCA. This can give more resolution to differentiate different clades. Try rerunning plink pca with the option `--maf 0.05` to exclude SNPs with less the 5% allele frequency. Does the resulting PCA plot look any differnt?
+
+## Admixture analysis 
+
+`ADMIXTURE` is a software tool for maximum likelihood estimation of individual ancestries from multilocus SNP genotype datasets. It uses the same statistical model as an earlier program called `STRUCTURE`, but runs faster. The model assumes a user-given number of ancestral populations and tries to assign each of the samples to (a mixture of) these hypothetical ancestral populations using the SNP genotype information.
+
+If samples are displayed as a mixture of different ancestral populations, this can provide support for hybridisation and genetic admxiture. However, results have to be interpreted with care. See [Lawson et al. 2018](https://www.nature.com/articles/s41467-018-05257-7).
+
+The manual of admixture can be found [here](https://dalexander.github.io/admixture/admixture-manual.pdf).
+
+We will run `ADMIXTURE` with different numbers of ancestral populations (K). Admixture does not take a .vcf file as input, but it uses a different format called .bed. We will first use `plink` to convert the `.vcf` into a `.bed` file. We will only use SNPs with minor allele frequency greater than 5%.
+
+        plink --double-id --vcf snps.pass.biallelic.vcf --maf 0.05 --out <output_base_name> --make-bed
+
+Now run admixture with values of K=2,3,..,7. Type `admixture --help` to see the syntax. Write a bash script to automatise running admixture for these different K values.
+
+Plot the results for the differnt K values. 
+
+## Divergence scan
+
+Now we want to look at divergence levels across chromosomes. For this we will compare genetic variation between the two populations with four samples each, Zooridge and Gifberg.
+
+Create two files, `gifberg.ids` and `zooridge.ids`, containing the sample names of Gifberg and Zooridge samples, respectively (one sample name per line). (Note that the sample names must be identical as in the `.vcf` file. Check sample names in the vcf.
+
+Then, use `vcftools` to calculate fst in 10 kilobase windows, for each window advancing by 1 kilobase. 
+
+        vcftools --vcf snps.pass.biallelic.vcf --weir-fst-pop gifberg.ids --weir-fst-pop zooridge.ids --fst-window-size 10000 --fst-window-step 1000 --out <output_base_name>
+        
+Load the resulting output file `chr15.windowed.weir.fst` into R and use Alexandros script to plot it.
+
+Discuss the results. How variable are divergence levels along chromosomes. What could be the reasons for this? How do you think would the plot change with larger sample sizes?
 
 
