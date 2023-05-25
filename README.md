@@ -43,8 +43,19 @@ Once on the leibniz login node, connect to our private node (*r0c03cn1*)
 `ssh r0c03cn1`
   
 On the privade node, activate a compute environment that has all software installed that we will need.
+Exectute the following commands
+
+ ```
+ /data/antwerpen/grp/asvardal/miniconda3/bin/conda init
   
-`/data/antwerpen/grp/asvardal/miniconda3/bin/conda activate`
+ echo 'conda activate hscon5' >> ~/.bashrc
+ ```
+ 
+  Close all byobu windows and close the ssh connection by typing `exit` multiple times. Log into the cluster again using `ssh` or MobaXterm and start a byobu session.
+  
+ Run 
+  
+  /data/antwerpen/grp/asvardal/miniconda3/bin/conda activate
   
 Start a byobu session
   
@@ -119,6 +130,8 @@ See presentation slides by Henrique Leitao
     
   </details>
   
+  You will realise that it is tedious to run this on all files if you work with many samples. Can you write a shell script that uses a for loop to atomate the for all your samples.
+     
   Create symbolic links to the reference genome folder `/scratch/antwerpen/grp/aomicscourse/genomics_activity/alignment_variant_calling/reference` in your own folder.
   
  <details>
@@ -258,7 +271,7 @@ Use bwa to align each of your samples against the reference genome. You can use 
   
 </details>
 
-Inspect the resulting samfiles using `less` or `head`. Are the reads sorted?
+Inspect the resulting samfiles using `less` or `head`. Are the reads sorted?  
   
 Sort fix mate information and sort reads using samtools and index the sorted alignments.
   ```
@@ -269,11 +282,46 @@ Check that the resulting binary alignment (bam) file is sorted. Note: You cannot
   ```
   samtools view -h <sample_id>.sorted.bam | less -S
   ```
+  
+You probably don't want to rerun all the commands above for each of your samples by hand. Write a shell script to automate this.
+ 
+  
+ 
+
+<details>
+  <summary>7. Show me how to do this.</summary>
+
+Use `nano` or `vim` to create a file called 'align_reads.sh'. Add the following to the file (adapting it for your samples, this script uses all!).
+  
+```  
+#!/usr/bin/env bash
+
+read_dir='/user/antwerpen/205/vsc20518/omicscourse/genomics_activity/alignment_variant_calling/reads'
+samples=("HC_21_002" "HC_21_007" "HC_21_010" "HC_21_019" "HC_21_024" "HC_21_032" "HC_21_088" "HC_21_093" "HC_21_095" "HC_21_103" "HC_22_025" "HC_22_040" "HC_22_049" "HC_22_054" "HC_22_126" "HC_22_130" "HC_22_132" "HC_22_134" "HC_22_141" "HC_22_225")  
+  
+for id in ${samples[@]};
+do
+      bwa mem -t 8 reference/HC_reference.fa ${read_dir}/${id}.1.fq ${read_dir}/${id}.2.fq > ${id}.sam
+      samtools fixmate -m -u ${id}.sam - | samtools sort > ${id}.sorted.bam
+      samtools index ${id}.sorted.bam
+      #optional: remove intermediate files
+      # rm ${id}.sam
+done
+```
+  
+Make the script executable
+  
+`chmod u+x align_reads.sh`
+
+To exectute the script, just run `./align_reads.sh` and wait till all reads are aligned and alignments sorted.
+  
+</details>
+
 ### QC on the alignments
 Run `samtools flagstat` to get some quick QC on the alignments.
   
 <details>
-  <summary>7. Show me how to do this.</summary>
+  <summary>8. Show me how to do this.</summary>
 
     samtools flagstat <sample_id>.sorted.bam
     
@@ -296,10 +344,13 @@ The calling command is a two step command. `bcftools mpileup` creates informatio
  Make sure to use all 20 samples in the calling! Can you adapt this for your case?
   
  <details>
-  <summary>8. Show me how to do this.</summary>
+  <summary>9. Show me how to do this.</summary>
+   
+   ```
     #Say I wanted to run this on chr14
     bcftools mpileup --regions chr14 -f reference/HC_reference.fa *.sorted.bam ../first_colleague/*.sorted.bam ../second_colleague/*.sorted.bam ../third_colleague/*.sorted.bam | bcftools call -mv - > variants.raw.vcf
-  
+   ```
+   
   Note: This relies on all colleagues having all the right files present. This might be a dangerous assumtions. It would be safer to reference the path to the .sorted.bam files for each sample explictly. 
     
   
@@ -324,7 +375,7 @@ The calling command is a two step command. `bcftools mpileup` creates informatio
   Can you run this more efficiently by using a pipe `|`?
   
   <details>
-    <summary>9. Show me how to do this.</summary>
+    <summary>10. Show me how to do this.</summary>
     
     
     bcftools filter --exclude 'QUAL<20' --soft-filter LowQual  variants.raw.vcf | bcftools filter --exclude 'MQ<50' --soft-filter BadMapping > variants.filter.vcf
@@ -341,7 +392,7 @@ The calling command is a two step command. `bcftools mpileup` creates informatio
   Or type `bcftools view` to see concise explanations.
       
   <details>
-   <summary>10. Show me how to do this.</summary>
+   <summary>11. Show me how to do this.</summary>
     
     
       bcftools view --max-alleles 2 --types snps  --apply-filters PASS variants.filter.vcf > snps.pass.biallelic.vcf
