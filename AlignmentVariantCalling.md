@@ -1,5 +1,5 @@
-# Evolutionary Genomics Tutorial
-A tutorial/assignment on how to get from raw sequencing reads to a basic population genetic analysis.
+# Short read alginment and variant calling tutorial
+A tutorial/assignment on how to get from raw sequencing reads and a reference genome to filtered variant calls.
 
 ## Introduction
 
