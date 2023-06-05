@@ -1,5 +1,5 @@
 # Short read alginment and variant calling tutorial
-A tutorial/assignment on how to get from raw sequencing reads and a reference genome to filtered variant calls.
+A tutorial/assignment on how to get from raw sequencing reads and a reference genome to filtered variant calls. Such variant calls can then be used in the [Population Genomics tutorial](PopulationGenomics.md).
 
 ## Introduction
 
