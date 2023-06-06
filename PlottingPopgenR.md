@@ -1,4 +1,5 @@
 # Plotting Population Genomic results in `R`
+by Alexandros Bantounas Alexandros.Bantounas@uantwerpen.be
 
 ## R Elements
 
