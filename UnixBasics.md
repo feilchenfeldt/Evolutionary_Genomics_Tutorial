@@ -88,6 +88,23 @@ do: then hold the control key and press c.
 This will kill the current process and return you to your prompt.
 If this does not work, close the terminal and open it again.
 
+### Getting help
+
+A UNIX cheat sheet like [this one here](https://files.fosswire.com/2007/08/fwunixref.pdf) might be helpful 
+as a reference of some of the most common UNIX commands. <br>
+
+Also, never forget that the internet is your best friend! Google your questions or use an AI chatbot. <br>
+
+Most UNIX commands and many other programs have help pages accessed through: `command_name --help`, or `command_name -h`,
+which also describe different ways to run a program.
+Most programs also have a more exhaustive manual page accessed by typing `man PROGRAM_NAME`.
+
+**Q** Access the `ls` help page and the `ls` manual page.
+
+
+
+
+
 
 
 ## Conda
