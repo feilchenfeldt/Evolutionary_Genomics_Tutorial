@@ -21,7 +21,7 @@ Some introductory slides can be found here: [add link]
 - Open a unix terminal
   - On Windows
     - install Ubuntu on the Windows subsystem for Linux (WSL)
-      - [Press here for help]()
+      - [Press here for help](HowToInstallWSL.md)
     - Press `Windows Key`, type *Ubuntu* and press `Enter`
   - On Linux:
     - Open a Terminal
@@ -65,7 +65,26 @@ UNIX or shell commands have a basic structure of:
 ```
 command -options target
 ```
-The command comes first (such as cd or ls as we will see later) then any options (always proceeded by a – and also called flags) and then the target (such as the file to move or the directory to list). These commands are written on the prompt (terminal command line).
+The command comes first (such as `cd` or `ls` as we will see later) then any options
+(always proceeded by a `–` or a `--` and sometimes followed by a value) 
+and then the target (such as the file to move or the 
+directory to list). 
+These commands are written on the prompt (terminal command line).
+
+The `-options` are sometimes called flags. 
+
+The `targets` are sometimes called positional arguments.
+
+Example:
+
+
+    cp -r folder1 folder2
+
+- Here `cp` is a bash command that copies files or folders.
+- `-r` is an option that tells the program to copy recursively, meaning to include all files in the folder and in all subfolders.
+- `folder1` and `folder2` are two targets. 
+  - `folder1` is the file path from which `cp` copies files.
+  - `folder2` is the file path to which `cp` copies files.
 
 ### Find your keys!
 
@@ -107,8 +126,13 @@ as a reference of some of the most common UNIX commands. <br>
 Also, never forget that the internet is your best friend! Google your questions or use an AI chatbot. <br>
 
 Most UNIX commands and many other programs have help pages accessed through: `command_name --help`, or `command_name -h`,
-which also describe different ways to run a program.
+which describe in short notation different ways to run the program.
+Some programs that need arguments a
 Most programs also have a more exhaustive manual page accessed by typing `man PROGRAM_NAME`.
+
+  Note that to exit man pages or many 
+  other programs opening text in the terminal,
+  you need to press `q`. 
 
 **Q** Access the `ls` help page and the `ls` manual page.
 
@@ -116,41 +140,156 @@ Most programs also have a more exhaustive manual page accessed by typing `man PR
     <summary>Show me how to do this.</summary>
     
 
-Type ls --help to access the “list” help page.
-Type man ls to access the “list” manual page.
+Type `ls --help` to access the “list” help page.
+Type `man ls` to access the “list” manual page.
 
-Note that if you type ls -h you don’t get the help page for ls. That’s because -h is the option that print sizes of files in a human-readable format (like 1K, 234M, 2G etc) when combined with the -l option, like in ls -lh. Find the -h option when you access the ls help page with ls --help
+Note that if you type `ls -h` you don’t get the help page for ls. That’s because -h is the option that print sizes of files in a human-readable format (like 1K, 234M, 2G etc) when combined with the -l option, like in ls -lh. Find the -h option when you access the ls help page with ls --help
     
     
   </details>
 
 
+**Q** What do the `cp`, `grep`, and `nano` commands do?
+
+  <details>
+    <summary>Show me how to get to the answer.</summary>
+  Type, for example
+
+  ```
+  cp --help
+  man cp
+  ```
+  The first one gives something like
+  
+  ```
+  usage: cp [-R [-H | -L | -P]] [-fi | -n] [-aclpsvXx] source_file target_file
+       cp [-R [-H | -L | -P]] [-fi | -n] [-aclpsvXx] source_file ... target_directory
+  ```  
+  Here, possible options are given with `-` and targets are described afterwards.
+  Flags or targets that are placed in brackets `[]` are optional 
+  (you can use them but you do not need to). 
+  The pipe `|` symbol is an exlusive or, so it means that either one or
+  the other option can be used.
+
+  The above usage text still has limited information. We see all the
+  flags but we do not know what they do. To get more information, 
+  check `man cp` or google for example `cp unix usage` or 
+  `cp unix examples` or `cp unix manual`. 
+
+  </details>
+
+### Navigation I
+
+A computer file system is laid out as a hierarchical multifurcating tree structure. This may sound confusing but it is easy to think of it as boxes of boxes where each box is a directory.
+There is one big box called the root. All other boxes are contained in this one big box. Boxes have labels such as ‘Users’ or ‘Applications’. Each box may contain more boxes (like Desktop or Downloads or Work) or files (like ‘file1.txt’ or ‘draft.docx’)
+Thus it is hierarchical (boxes in boxes),
+multifurcating
+(each box can contain multiple boxes or files) 
+tree structure (similar to how a tree has branches and leaves).
+
+![Unix directory structure](Images/unix_directory_structure.png)
+
+There are two ways to refer to directories and their positions in this hierarchy and relationship to other directories: absolute and relative paths.
+
+A) **Absolute path**
+The absolute path is the list of all directories starting from the root 
+that lead to the current directory. Directories are separated using a `/`.
+
+For example, the path to the directory ‘Desktop’ in the picture above is `/User/Desktop`
+
+**Q** What is the absolute path to the directory `currentWork` above?
+
+  <details>
+    <summary>Show me the answer.</summary>
+  
+    /User/Desktop/currentWork
+
+  </details>
+
+B) **Relative path**
+
+A directory can also be referred to by its relative location from some other directory 
+(usually where you are working from). 
+The parent directory of a directory is referred to using `..`
+The current directory is referred to using `.`
+For example, if I am in ‘Desktop’ and want to get to ‘User’ the relative path is `..`.
+If I am in `User` and want to get to `Applications`, the relative path is 
+`../Applications` (going one directory up, and then down into `Applications`).
+
+**Q** What is the relative path to get from `Adobe` to `Microsoft`?
+
+  <details>
+    <summary>Show me the answer.</summary>
+  
+    ../Microsoft
+
+  </details>
+
+**Q** What is the relative path to get from `currentWork` to `Adobe`?
+
+  <details>
+    <summary>Show me the answer.</summary>
+  
+    ../../../Applications/Adobe
+
+  </details>
 
 
 
 ## Conda
 
-In bioinformatics you will often need computer programs that are not part of your Unix default installation ...
+In bioinformatics you will often need computer programs that are 
+not part of your Unix default installation. There are several ways
+of installing such programs. For some of them you need administrator
+rights on your system.
+
+Here we will only explain one way of installing programs packages, 
+using the **conda** package manager.
+
+The conda package manager has several advantages:
+ - It works with large program respositories where you can find 
+virtually all packages for *python*, many for R., and many unix programs 
+especially bioinformatics programs.
+ - Conda is cross-platform, so you can get similar software installations
+on different operating systems.
+ - You do not need any administrator rights to install packages with conda.
+ - Unix (and python/R) tools usually depend on many other tools and programs. 
+Conda makes sure that you have the right versions of all dependencies installed.
+ - You can create separate conda environments with different versions 
+of different packages.
+ - You can export information on your conda environment so that
+other people can redo the same analysis with the same software 
+versions (Same "compute environment").
+
+One disadvantage of conda is that it can be slow to resolve dependencies and 
+install programs. This can be solved by creating new environments, 
+by carefully choosing channels (places for where programs will be installed) and 
+by using `mamba` instead of conda. (Not shown here)
 
 ### Installing conda
 
-Download conda
+- Download conda
 
 ```
 wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.11.0-2-Linux-x86_64.sh
 ```
 
-Install miniconda
+(Note: For this tutorial we are using conda with python 3.8, 
+but you might choose more up-to-date versions for your other projects.)
+
+- Install miniconda
 
 ```
 bash Miniconda3-py38_23.11.0-2-Linux-x86_64.sh -b
 ```
 
-Once miniconda is installed, you need to *quit your terminal and open a new one* to have conda activated.
+Once miniconda is installed, you need to initialise conda by running
+
+    ~/miniconda3/bin/conda init
 
 
-
-
-
+Now, every time you open a new terminal window, 
+you should see `(base)` at the lefthand side of your command line.
+This means that conda is activated.
 
 

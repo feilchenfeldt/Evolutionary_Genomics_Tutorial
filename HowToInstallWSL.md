@@ -3,13 +3,15 @@ Link to the instructions by Microsoft: https://learn.microsoft.com/en-us/windows
 Please check pre-requisites section to make sure your system is compatible and install accordingly.
 
 ## Steps
-- Run windows power shell in administrator mode.
-	- In search bar type power shell. Right click on the app and click on Run as Administrator from the drop-down menu.
-	- Type following in the terminal prompt
+- Run windows powerShell in administrator mode.
+    - In search bar type `powerShell`. Right click on the app and click on Run as Administrator from the drop-down menu.
+    - ![Open PowerShell](Images/run_powerShell.png)
+- Type following in the terminal prompt
 ```
 wsl --install
 ```
-	- Reboot your commputer
+
+- Reboot your computer
 - Once you reboot the ubuntu automatically starts launching itself. 
 - Follow the instructions on the window. 
     - After a 15 minutes if nothing is shown press enter.
