@@ -20,8 +20,8 @@ Some introductory slides can be found here: [add link]
 
 - Open a unix terminal
   - On Windows
-    - install the Windows subsystem for Linux (WSL)
-    - Install Ubuntu 20.04 from the Windows Store
+    - install Ubuntu on the Windows subsystem for Linux (WSL)
+      - [Press here for help]()
     - Press `Windows Key`, type *Ubuntu* and press `Enter`
   - On Linux:
     - Open a Terminal
@@ -30,10 +30,21 @@ Some introductory slides can be found here: [add link]
     - Make sure that your shell is set to *bash*
 - Questions or tasks are indicated with **Q**
 - Text `with gray background` usually indicates a command that you can type or copy to the terminal
-- If you get stuck, check the answer-box:
 
 
-Oh no, only if you get stuck!! First try to find the answer yourself!
+  <details>
+    <summary>If you get stuck, check the answer-box.</summary>
+    
+
+  On no, only if you get stuck!! First try to find the answer yourself!
+
+
+
+  </details>
+
+
+
+
 
 ## Why would we use the Terminal / shell in the first place?
 
@@ -132,7 +143,7 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.11.0-2-Linux-x86_64.
 Install miniconda
 
 ```
-bash https://repo.anaconda.com/miniconda/Miniconda3-py38_23.11.0-2-Linux-x86_64.sh -b
+bash Miniconda3-py38_23.11.0-2-Linux-x86_64.sh -b
 ```
 
 Once miniconda is installed, you need to *quit your terminal and open a new one* to have conda activated.
