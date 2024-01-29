@@ -101,7 +101,17 @@ Most programs also have a more exhaustive manual page accessed by typing `man PR
 
 **Q** Access the `ls` help page and the `ls` manual page.
 
+  <details>
+    <summary>Show me how to do this.</summary>
+    
 
+Type ls --help to access the “list” help page.
+Type man ls to access the “list” manual page.
+
+Note that if you type ls -h you don’t get the help page for ls. That’s because -h is the option that print sizes of files in a human-readable format (like 1K, 234M, 2G etc) when combined with the -l option, like in ls -lh. Find the -h option when you access the ls help page with ls --help
+    
+    
+  </details>
 
 
 
@@ -116,7 +126,7 @@ In bioinformatics you will often need computer programs that are not part of you
 Download conda
 
 ```
-wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.11.0-2-Linux-x86_64.sh
+wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.11.0-2-Linux-x86_64.sh -b
 ```
 
 Install miniconda
