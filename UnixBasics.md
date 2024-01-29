@@ -34,16 +34,15 @@ Some introductory slides can be found here: [add link]
 
   <details>
     <summary>If you get stuck, check the answer-box.</summary>
-    
 
   On no, only if you get stuck!! First try to find the answer yourself!
 
-
-
   </details>
 
+- Download the tutorial data in your terminal. 
+Type the following in your terminal 
 
-
+    wget Data.zip
 
 
 ## Why would we use the Terminal / shell in the first place?
@@ -234,7 +233,7 @@ If I am in `User` and want to get to `Applications`, the relative path is
 
   </details>
 
-
+[test download](https://github.com/feilchenfeldt/Evolutionary_Genomics_Tutorial/blob/main/Data/AlignmentVariantCalling/test.fq)
 
 ## Conda
 
