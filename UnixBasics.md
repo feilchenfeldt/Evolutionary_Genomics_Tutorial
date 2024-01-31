@@ -377,6 +377,131 @@ then
 ### Managing your directories and files
 
 
+A new folder can be created using the command `mkdir` 
+(meaning “make directory”).
+
+**Q** In the folder *UnixBasics*, create a new directory called
+*my_unix_files*.
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+  First make sure that you are in the directory *UnixBasics*.
+  E.g., by running `pwd`. If not, navigate there. Then run
+
+    mkdir my_unix_files
+
+  </details>
+
+
+
+**Q** Create an empty text file called *file1.txt* using `touch`.
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+    touch file1.txt
+  Tip: `touch` can also be used to update the access date of a file or directory.
+
+  </details>
+
+
+Editing files in the terminal is a bit tedious but you’ll learn quickly!
+Here we will use the text editor called **nano**.
+
+**Q**  Edit *file1.txt* using nano and write 
+‘Hello fellow participants’ in the second line.
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+    nano file1.txt
+
+  ENTER to access the second line \
+  Type: ‘Hello fellow participants’ \
+  ctrl o to save, ^ corresponds to ctrl in case you were wondering 🙂 \
+  ENTER to validate saving\
+  ctrl x to exit
+
+  </details>
+
+**Q** Copy *file1.txt* to the *my_unix_files* directory,
+name this copy file2.txt
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+    cp file1.txt my_unix_files/file2.txt
+
+  cp stands for ‘copy’
+
+  </details>
+
+
+**Q** Rename *file1.txt* to *myfile1.txt*
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+    mv file1.txt myfile1.txt
+
+  The command `mv` stands for ‘move’.
+  It is the same command to move or to rename a file 
+  (‘move’ a file in the current directory with a different output name).
+
+  </details>
+
+
+
+**Q** Move *myfile1.txt* to the *my_unix_files* folder.
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+    mv myfile1.txt my_unix_files/
+
+  The command `mv` stands for ‘move’.
+  It is the same command to move or to rename a file 
+  (‘move’ a file in the current directory with a different output name).
+
+  </details>
+
+**Q** Go to ‘my_unix_files’ directory and delete the file *file2.txt*. 
+The command to remove files is `rm`.
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+    cd my_unix_files
+    rm file2.txt
+
+  rm stands for ‘remove’
+
+  </details>
+
+
+**Q** Go one directory up and delete the *my_unix_files* folder.
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+    cd ..
+    rm unix_tutorial
+
+  This returns an error, only using rm is not possible to remove a directory, a flag that allows deleting a directory and its content is needed.
+  
+    rm -ri unix_tutorial
+  
+  The `-r` flag remove directories and their contents recursively and 
+  `-i` tells the command to ask for permission to delete.
+  To delete an empty directory, you can also use `rmdir`.
+
+  </details>
+
+
+There is no ‘undo’ or ‘trash folder’ in the terminal, so be very careful when deleting files or directories!
+It is a good practice to use the -i flag as a safety step with the
+rm (e.g.,:`rm -i file1.txt`)
 
 
 ## Conda
