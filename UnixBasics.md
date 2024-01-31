@@ -250,15 +250,17 @@ without argument goes to your home folder.
 
 - Download the test data.
 
-
+  ```
     wget  https://raw.githubusercontent.com/feilchenfeldt/Evolutionary_Genomics_Tutorial/main/Data.zip
-
+  ```
+  
   <details>
     <summary>Note for MacOS users.</summary>
   
   wget is not available on MacOS, use `curl` instead.
 
   </details>
+
 
 - Then press `Enter`. A `.zip` archive (=compressed file) with test data should be downloaded.
   - Decompress the `.zip` archive
@@ -502,6 +504,194 @@ The command to remove files is `rm`.
 There is no ‘undo’ or ‘trash folder’ in the terminal, so be very careful when deleting files or directories!
 It is a good practice to use the -i flag as a safety step with the
 rm (e.g.,:`rm -i file1.txt`)
+
+### View and manipulate files
+
+For the next exercise, you are going work with the text file `Test_file_genomics_data.txt`, 
+which is located in the directory `UnixBasics`.
+
+- If you are not already in the directory `UnixBasics`, then navigate there.
+
+There are several ways to view the content of a file:
+
+- `cat` will print the whole file. It can be useful for viewing small
+files and as a part of computational processing using the pipe `|` 
+(which you will learn later), but it is not suitable for viewing large files.
+Remember, you can always use ctrl c to kill the task.
+
+- `less` prints the content of a file on one screen length at a time. 
+An important difference between `less` and `cat`, is that `less`blocks
+your terminal. You do not return to the commandline until you exit the 
+program. It is a bit similar to starting a program on Windows 
+(or any graphical desktop environment).
+
+Within `less`:\
+`ENTER` displays the next line\
+`k` displays the previous line\
+`SPACE` displays the next page\
+`b` displays the previous page\
+`shift g` prints the end of the file\
+`q` to exit
+
+> [!TIP]
+>If a file contains very long lines,
+these lines will wrap to fit the screen width. (Meaning, they
+will be broken at the current width of the terminal window.)
+This can result in a confusing display, especially if there are,
+for example, long sequences in your file. 
+
+To chop the lines and only display the beginning of each line we can use:
+
+    less -S <filename>
+
+You can scroll horizontally across lines using the arrow keys.
+
+**Q** Explore the example file using less and cat.
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    cat Test_file_genomics_data.txt
+    
+    less Test_file_genomics_data.txt
+
+
+  </details>
+
+
+This file contains population pairwise genome-wide statistics 
+(*Fst*, *Dxy*, nucleotide diversity (pi) per population) 
+calculated on 10 kilobase (kb) windows.
+‘scaffold’ specifies the linkage group or chromosome
+‘Start’ & ‘End’ specify the start and end position of the window
+‘FST’ & ‘DXY’ represent relative and absolute genomic differentiation measures
+‘Set1_pi’ & ‘Set2_pi’ correspond to the nucleotide diversity for population 1 and population 2, respectively
+
+`head` will print the first 10 lines of a file on the prompt.
+
+`tail` will print the last 10 lines of a file on the prompt.
+
+**Q** Print the first 25 lines of the example file `Test_file_genomics_data.txt`
+
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    head -n 25 Test_file_genomics_data.txt
+
+  </details>
+
+Show me the answer!
+
+**Q** Print the last 50 lines of the example file `Test_file_genomics_data.txt`
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    tail -n 50 Test_file_genomics_data.txt
+
+  </details>
+
+`grep` is a tool for searching files for a specific content. It has many powerful applications, the basics of which will be explained here.
+
+The basic syntax of grep is
+
+    grep 'search pattern' <filename>
+
+**Q** Print all the lines that contain LG13 from the file `Test_file_genomics_data.txt`
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    grep 'LG13' Test_file_genomics_data.txt
+
+  </details>
+
+**Q** How many lines contain LG20 in the file Test_file_genomics_data.txt?
+
+  <details>
+    <summary>Show me the answer!</summary>
+
+    grep -c 'LG20' Test_file_genomics_data.txt
+
+>[!Tip] Use `grep --help` to obtain information about the flag `-c`. It stands for “count”.
+  </details>
+
+
+
+
+**Q** Print three lines that come before and three lines after 
+the pattern ‘scaffold’ in the file `Test_file_genomics_data.txt`
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    grep -B 3 'scaffold' Test_file_genomics_data.txt
+    grep -A 3 'scaffold' Test_file_genomics_data.txt
+
+  >[!Tip] You can also use the `-C` flag to print the lines before and after simultaneously.
+  </details>
+
+
+
+**Q** Print all the lines that do not contain **LG** in the file 
+`Test_file_genomics_data.txt`
+
+Show me the answer!
+grep -v 'LG' Test_file_genomics_data.txt
+Use grep --help to obtain information about the flag -v. It stands for “invert-match”.
+cut allows you to extract a specific column from a file. By default, the column delimiter is TAB. You can change this using -d
+
+Q Print the column 5 of the test file
+
+Show me the answer!
+cut -f 5 Test_file_genomics_data.txt
+wc counts the number of lines, characters or words in a file
+
+Q How many lines has the test file?
+
+Show me the answer!
+wc -l Test_file_genomics_data.txt
+sort will sort lines of a text file
+
+Q Sort the test file by increasing Fst value
+
+Show me the answer!
+sort -g -k 4 Test_file_genomics_data.txt
+-g applies for a general numeric sort
+-k specifies the column in which the values should be sorted
+sed has many powerful applications including the replacement of one block of text with another.
+The syntax for this is:
+
+sed 's/'pattern to find'/'text to replace it with'/g' 'filename'
+
+This will output the changed file contents to the screen.
+
+If we want to redirect the output to a new file we can use > , for example:
+
+sed 's/'pattern to find'/'text to replace it with'/g' 'filename' > 'new_filename.txt'
+
+Q Change the text ‘LG’ to ‘LinkageGroup’ on every line of the test file and redirect the output to a new file called Test_file_genomics_data_renamed.txt. Then visually inspect the file to check if it worked.
+
+Show me the answer!
+sed 's/LG/LinkageGroup/g' Test_file_genomics_data.txt > Test_file_genomics_data_renamed.txt
+head Test_file_genomics_data_renamed.txt
+tail Test_file_genomics_data_renamed.txt
+The pipe | is a very useful key that sends the output from one unix command as input into another command, for example:
+
+grep 'LG12' Test_file_genomics_data.txt | head
+
+Q Create a new file containing the last five lines of the column two of the example file Test_file_genomics_data.txt using a single command line.
+
+Show me the answer!
+cut -f 2 Test_file_genomics_data.txt | tail -n 5 > New_file.txt
+It is often useful to copy a file from a remote system (e.g., the amazon server) to a local system (e.g., your computer), and vice-versa.
+To do this, a useful command is scp, that stands for ‘Secure Copy Protocol’. It works like cp in the sense that both commands require a source and a destination location for the copy operation; the difference is that with scp, one or both of the locations are on a remote system and requires authentication.
+This example would copy a file from your personal computer to the amazon server:
+
+scp 'source_path/FILE_NAME.txt' 'wpsg@ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:/destination_path/'
+
+
 
 
 ## Conda
