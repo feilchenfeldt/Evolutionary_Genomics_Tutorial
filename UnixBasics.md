@@ -6,12 +6,16 @@ Much of this tutorial is based on the Unix primer by Angelica Cuevas, Angela P. 
 for the Population and Speciation Genomics Course in Cesky Krumlov 2022.
 
 
-##### Table of Contents  
+
+
+<!--
+##### Table of Contents
 [Introduction](#intro)  
 [Tutorial start](#emphasis)  
+-->
 
 
-<a name="intro"/>
+
 ## Introduction
 
 ### Introductory slides
@@ -657,9 +661,9 @@ cut allows you to extract a specific column from a file. By default, the column 
 
 #### Extracting columns from a file
 
->[!Tip]The command `cut` cuts sections from each line of a file
-> and prints them to stdout.
-> Type `cat --help` to see how to use it.
+The command `cut` cuts sections from each line of a file
+and prints them to stdout.
+Type `cat --help` to see how to use it.
 
 **Q** Print *column 5* of the test file
 
@@ -676,35 +680,65 @@ cut allows you to extract a specific column from a file. By default, the column 
 
 `wc` counts the number of lines, characters or words in a file.
 
-Q How many lines has the test file?
+**Q** How many lines has the test file?
 
-Show me the answer!
-wc -l Test_file_genomics_data.txt
-sort will sort lines of a text file
+  <details>
+    <summary>Show me how to do this!</summary>
 
-Q Sort the test file by increasing Fst value
+    wc -l Test_file_genomics_data.txt
 
-Show me the answer!
-sort -g -k 4 Test_file_genomics_data.txt
--g applies for a general numeric sort
--k specifies the column in which the values should be sorted
-sed has many powerful applications including the replacement of one block of text with another.
+  </details>
+
+
+#### Sort lines in a file
+
+`sort` will sort lines of a text file and prints the result to *stdout*.
+It will not change the original file!
+
+**Q** Sort the test file by increasing Fst value
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    sort -g -k 4 Test_file_genomics_data.txt
+
+  `-g` applies for a general numeric sort
+  `-k` specifies the column in which the values should be sorted
+
+  </details>
+
+#### Replacing text with `sed`
+
+`sed` has many powerful applications including the replacement of one block of text with another.
 The syntax for this is:
 
-sed 's/'pattern to find'/'text to replace it with'/g' 'filename'
+    sed 's/<pattern to find>/<text to replace it with>/g' <filename>
 
 This will output the changed file contents to the screen.
 
-If we want to redirect the output to a new file we can use > , for example:
+If we want to redirect the output to a new file we can use `>` ,
+for example:
 
-sed 's/'pattern to find'/'text to replace it with'/g' 'filename' > 'new_filename.txt'
+    sed 's/'pattern to find'/'text to replace it with'/g' 'filename' > 'new_filename.txt'
 
-Q Change the text ‘LG’ to ‘LinkageGroup’ on every line of the test file and redirect the output to a new file called Test_file_genomics_data_renamed.txt. Then visually inspect the file to check if it worked.
+**Q** Change the text ‘LG’ to ‘LinkageGroup’ on every line of the 
+test file and redirect the output to a new file called 
+`Test_file_genomics_data_renamed.txt`. 
+Then visually inspect the file to check if it worked.
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    sed 's/LG/LinkageGroup/g' Test_file_genomics_data.txt > Test_file_genomics_data_renamed.txt
+    head Test_file_genomics_data_renamed.txt
+    tail Test_file_genomics_data_renamed.txt
+
+  </details>
+
+<!--
 
 Show me the answer!
-sed 's/LG/LinkageGroup/g' Test_file_genomics_data.txt > Test_file_genomics_data_renamed.txt
-head Test_file_genomics_data_renamed.txt
-tail Test_file_genomics_data_renamed.txt
+
 The pipe | is a very useful key that sends the output from one unix command as input into another command, for example:
 
 grep 'LG12' Test_file_genomics_data.txt | head
@@ -720,7 +754,7 @@ This example would copy a file from your personal computer to the amazon server:
 scp 'source_path/FILE_NAME.txt' 'wpsg@ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:/destination_path/'
 
 
-
+-->
 
 ## Conda
 
