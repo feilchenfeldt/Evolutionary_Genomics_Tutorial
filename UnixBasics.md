@@ -253,6 +253,13 @@ without argument goes to your home folder.
 
     wget  https://raw.githubusercontent.com/feilchenfeldt/Evolutionary_Genomics_Tutorial/main/Data.zip
 
+  <details>
+    <summary>Note for MacOS users.</summary>
+  
+wget is not available on MacOS, use `curl` instead.
+
+  </details>
+
 - Then press `Enter`. A `.zip` archive (=compressed file) with test data should be downloaded.
   - Decompress the `.zip` archive
 
