@@ -256,7 +256,7 @@ without argument goes to your home folder.
   <details>
     <summary>Note for MacOS users.</summary>
   
-wget is not available on MacOS, use `curl` instead.
+  wget is not available on MacOS, use `curl` instead.
 
   </details>
 
