@@ -5,6 +5,12 @@ Acknowledgments:
 This material is based on the Unix primer by Angelica Cuevas, Angela P. Fuentes-Pardo, Julia M.I. Barth
 for the Population and Speciation Genomics Course in Cesky Krumlov 2022
 
+<!-- 
+##### Table of Contents  
+[Headers](#headers)  
+[Emphasis](#emphasis)  
+-->
+
 ## Introductory slides
 
 Some introductory slides can be found here: [add link]
@@ -39,10 +45,6 @@ Some introductory slides can be found here: [add link]
 
   </details>
 
-- Download the tutorial data in your terminal. 
-Type the following in your terminal 
-
-    wget Data.zip
 
 
 ## Why would we use the Terminal / shell in the first place?
@@ -233,7 +235,142 @@ If I am in `User` and want to get to `Applications`, the relative path is
 
   </details>
 
-[test download](https://github.com/feilchenfeldt/Evolutionary_Genomics_Tutorial/blob/main/Data/AlignmentVariantCalling/test.fq)
+### Download the tutorial data
+
+If you have not done so yet,
+**download the tutorial data in your terminal:**
+
+- To return to your home folder, type
+
+
+    cd ~
+
+Note: Actually the tilde is not needed, because per default `cd` 
+without argument goes to your home folder.
+
+- Download the test data.
+
+
+    wget  https://raw.githubusercontent.com/feilchenfeldt/Evolutionary_Genomics_Tutorial/main/Data.zip
+
+- Then press `Enter`. A `.zip` archive (=compressed file) with test data should be downloaded.
+  - Decompress the `.zip` archive
+
+  
+    unzip Data.zip
+
+
+
+### Where am I?
+Sometimes one can get confused in which folder the terminal currently is. 
+The command `pwd` is very useful for this. It returns the current work directory.
+- Type
+
+
+    pwd
+
+Confirm that you are in your home folder. If not, go there.
+
+### Navigation II
+
+Use the commands `ls` and `cd` to navigate the file system. 
+Remember, `ls` shows you all files and folders in the current
+directory and `cd <dirname>` changes to dirname. 
+
+Note on syntax: When I write `<name>`, the `<>` just means that you
+should replace the content by any appropriate name. You should
+**not** actually type the symbols `<` and `>`.
+
+**Q** Navigate to the folder `UnixBasics` which is located in 
+the folder `Data` that you generated in your homefolder
+by unzipping `Data.zip`.
+
+  <details>
+    <summary>Show me how to do this.</summary>
+  
+Assuming that you are in your home directory
+
+      cd Data/UnixBasics
+
+If you are not in your home directory, 
+first go there by typing `cd`. If you still get an error, 
+use `ls` to check whether the folder `Data` exists.
+
+  </details>
+
+**Q** Check whether you really are in the directory `UnixBasics`
+
+  <details>
+    <summary>Show me how to do this.</summary>
+
+Type `pwd` to display the absolute path of the current directory.
+    It should give something like `/home/<username>/Data/UnixBasics`
+
+  </details>
+
+**Q** List all files and folders in the current directory.
+
+  <details>
+    <summary>Show me how to do this.</summary>
+
+      ls
+
+  </details>
+
+**Q** Check the size of all files in the current 
+
+  <details>
+    <summary>Show me how to do this.</summary>
+
+`ls -l` The flag `-l` specifies a ‘long listing format’. 
+It returns the columns: permissions, number of hardlinks, 
+file owner, file group, file size in bytes, modification date, filename.
+
+  However, you will see that the file size is not in a very useful format.
+It is in number of bytes. Therefore, use `ls -lh`, which will print 
+file-size in human-readable format e.g., kB or MB.
+  </details>
+
+
+**Q** Go back to your home directory.
+
+  <details>
+    <summary>Show me how to do this.</summary>
+  
+  Using the absolute path:
+  
+    cd /home/<your_username>
+  (replace <your_username> by your username) 
+
+  Using the relative path:
+    
+    cd ../../
+
+  Using a really useful shortcut:
+  
+    cd
+
+  </details>
+
+**Q** Go to the folder `UnixBasics` in two steps,
+by first going into the folder `Data` and then into 
+the folder `UnixBasics`.
+
+  <details>
+    <summary>Show me how to do this.</summary>
+
+    cd Data
+then
+
+    cd UnixBasics
+
+
+  </details>
+
+### Managing your directories and files
+
+
+
 
 ## Conda
 
