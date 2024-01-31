@@ -5,24 +5,27 @@ Hannes Svardal
 Much of this tutorial is based on the Unix primer by Angelica Cuevas, Angela P. Fuentes-Pardo, Julia M.I. Barth
 for the Population and Speciation Genomics Course in Cesky Krumlov 2022.
 
-<!-- 
+
 ##### Table of Contents  
-[Headers](#headers)  
-[Emphasis](#emphasis)  
--->
+[Introduction](#intro)  
+[Tutorial start](#emphasis)  
 
-## Introductory slides
 
-Some introductory slides can be found here: [add link]
+<a name="intro"/>
+## Introduction
 
-## Learning goals
+### Introductory slides
+
+Some introductory slides can be found here: [UnixBasics.pdf](Resources/2024-01_UNIX_for_bioinformatics.pdf)
+
+### Learning goals
 
 - Navigate in a UNIX terminal environment
 - Create, move, and delete directories
 - Create, move, delete and edit files
 - Use basic UNIX commands and know where to find help
 
-## How to use this tutorial
+### How to use this tutorial
 
 - Open a unix terminal
   - On Windows
@@ -47,7 +50,7 @@ Some introductory slides can be found here: [add link]
 
 
 
-## Why would we use the Terminal / shell in the first place?
+### Why would we use the Terminal / shell in the first place?
 
 *Scripting:* We can write down a sequence of commands to perform particular tasks or analyses;
 when working with genomic data, a task usually takes minutes, sometimes hours or even days – it’s no fun to sit and wait in front of your computer this long just for a mouse-click to initiate the next task.
@@ -60,7 +63,7 @@ when working with genomic data, a task usually takes minutes, sometimes hours or
 
 *Compatibility:* The terminal can (remotely) be accessed with computers running on different operating systems
 
-## Basic syntax of shell commands
+### Basic syntax of shell commands
 
 UNIX or shell commands have a basic structure of:
 ```
@@ -118,6 +121,9 @@ program and it is stuck or doing something you don’t want it to
 do: then hold the control key and press c. 
 This will kill the current process and return you to your prompt.
 If this does not work, close the terminal and open it again.
+
+<a name="tutorial"/>
+## Getting hands on – the tutorial
 
 ### Getting help
 
@@ -637,16 +643,38 @@ the pattern ‘scaffold’ in the file `Test_file_genomics_data.txt`
 **Q** Print all the lines that do not contain **LG** in the file 
 `Test_file_genomics_data.txt`
 
-Show me the answer!
-grep -v 'LG' Test_file_genomics_data.txt
-Use grep --help to obtain information about the flag -v. It stands for “invert-match”.
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    grep -v 'LG' Test_file_genomics_data.txt
+
+  >[!Tip] Use `grep --help to obtain information about the flag -v. It stands for “invert-match”.
 cut allows you to extract a specific column from a file. By default, the column delimiter is TAB. You can change this using -d
 
-Q Print the column 5 of the test file
+</details>
 
-Show me the answer!
-cut -f 5 Test_file_genomics_data.txt
-wc counts the number of lines, characters or words in a file
+---
+
+#### Extracting columns from a file
+
+>[!Tip]The command `cut` cuts sections from each line of a file
+> and prints them to stdout.
+> Type `cat --help` to see how to use it.
+
+**Q** Print *column 5* of the test file
+
+
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    cut -f 5 Test_file_genomics_data.txt
+
+</details>
+
+#### Counting lines in a file
+
+`wc` counts the number of lines, characters or words in a file.
 
 Q How many lines has the test file?
 
