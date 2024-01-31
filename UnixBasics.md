@@ -1,9 +1,9 @@
 # Unix tutorial – how to use the Terminal
 Hannes Svardal
 
-Acknowledgments:
-This material is based on the Unix primer by Angelica Cuevas, Angela P. Fuentes-Pardo, Julia M.I. Barth
-for the Population and Speciation Genomics Course in Cesky Krumlov 2022
+*Acknowledgments:*
+Much of this tutorial is based on the Unix primer by Angelica Cuevas, Angela P. Fuentes-Pardo, Julia M.I. Barth
+for the Population and Speciation Genomics Course in Cesky Krumlov 2022.
 
 <!-- 
 ##### Table of Contents  
