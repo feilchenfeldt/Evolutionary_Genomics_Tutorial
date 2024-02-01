@@ -721,7 +721,7 @@ for example:
 
     sed 's/'pattern to find'/'text to replace it with'/g' 'filename' > 'new_filename.txt'
 
-**Q** Change the text ‘LG’ to ‘LinkageGroup’ on every line of the 
+**Q** Change the text ‘LG’ to ‘Chromosome’ on every line of the 
 test file and redirect the output to a new file called 
 `Test_file_genomics_data_renamed.txt`. 
 Then visually inspect the file to check if it worked.
@@ -729,31 +729,90 @@ Then visually inspect the file to check if it worked.
   <details>
     <summary>Show me how to do this!</summary>
 
-    sed 's/LG/LinkageGroup/g' Test_file_genomics_data.txt > Test_file_genomics_data_renamed.txt
+    sed 's/LG/Chromosome/g' Test_file_genomics_data.txt > Test_file_genomics_data_renamed.txt
     head Test_file_genomics_data_renamed.txt
     tail Test_file_genomics_data_renamed.txt
 
   </details>
 
+#### The pipe `|`
+
+The pipe `|` is a very useful key that sends the output from one 
+unix command as input into another command, for example:
+
+
+    grep 'LG12' Test_file_genomics_data.txt | head
+
+
+**Q** Create a new file containing the last five lines of the column
+two of the example file `Test_file_genomics_data.txt` using a single command line.
+
+  <details>
+    <summary>Show me how to do this!</summary>
+
+    cut -f 2 Test_file_genomics_data.txt | tail -n 5 > New_file.txt
+
+  </details>
+
+### Logging into a remote server
+
+One of the big strengths of working with the unix command line is that it is very easy
+to work oon a computer different from your own local computer, by connecting your
+terminal to a shell that is running on a computer somewhere in the internet (= server). 
+Working on such a remote computer would be very similar to working on your own computer.
+The reason for doing this is that the remote computer might have the data you want to work
+with, the software, or that it has much higher compute power. An example of this are
+high performance compute (HPC) clusters. Those are interconnected computers that together
+provide high compute power. Such clusters are needed for the analysis of large genomic
+datasets.
+
+To connect to a remote server, we usually use the 'Secure Shell Protocol', 
+which is implemented in the command `ssh`. It is used as follows. On your local computer, 
+you would run
+
+    ssh <username>@<server_address>
+
+where the `<username>` would be your username on the remote server and `<server_address>`
+would be the address of the server, for example `www.myserver.org` or an ip address. You
+will then be asked your password for the server. Usually will need
+to apply for with the server adminstrators to get a login (username + password) for a 
+server, or you get it when you buy compute time on a server like the amazon webservices.
+
+### Tranfering a file from/to a server
+
+
+It is often useful to copy a file from a remote system 
+(e.g., the amazon server, or a compute cloud) to a local system
+(e.g., your computer),
+and vice-versa.
+To do this, a useful command is `scp`, that stands for 
+‘Secure Copy Protocol’. It works like cp in the sense that both commands require a source and a destination location for the copy operation; the difference is that with scp, one or both of the locations are on a remote system and requires authentication.
+
+To copy a file from your personal computer to a remote server, you would do:
+
+    scp <local_file>  <username>@<server_address>:<destination_path>
+
+Remember that `<...>` means that this is just an example, you need to add actual file name, user name etc.
+For example, if you wanted to copy the local file `file1.txt` to the folder
+`/Data/SequencingData` on the server `www.mycomputecluster.eu` 
+on which you have a username `genomicist`, you would do
+
+    scp 'file1.txt'  'genomicist@www.mycomputecluster.eu:/Data/SequencingData/'
+
+After executing this you will be asked for the password of the user `genomicsist`on the remote server. Of course, for this `file1.txt` needs to be in the current folder. 
+If not you need to give the *path* to the file.
+
+Don't actually do this, because this server does not exist. 
+
+To copy a file from a remote server to your computer, you would first run locally
+
+    scp <username>@<server_address>:<remote_file>  <local_path>
+
+So it is similar to above just with exchanged roles between remote and local.
+
+
+
 <!--
-
-Show me the answer!
-
-The pipe | is a very useful key that sends the output from one unix command as input into another command, for example:
-
-grep 'LG12' Test_file_genomics_data.txt | head
-
-Q Create a new file containing the last five lines of the column two of the example file Test_file_genomics_data.txt using a single command line.
-
-Show me the answer!
-cut -f 2 Test_file_genomics_data.txt | tail -n 5 > New_file.txt
-It is often useful to copy a file from a remote system (e.g., the amazon server) to a local system (e.g., your computer), and vice-versa.
-To do this, a useful command is scp, that stands for ‘Secure Copy Protocol’. It works like cp in the sense that both commands require a source and a destination location for the copy operation; the difference is that with scp, one or both of the locations are on a remote system and requires authentication.
-This example would copy a file from your personal computer to the amazon server:
-
-scp 'source_path/FILE_NAME.txt' 'wpsg@ec2-XX-XXX-XXX-XXX.compute-1.amazonaws.com:/destination_path/'
-
-
 -->
 
 ## Conda
