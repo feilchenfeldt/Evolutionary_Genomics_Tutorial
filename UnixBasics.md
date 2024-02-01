@@ -126,8 +126,10 @@ do: then hold the control key and press c.
 This will kill the current process and return you to your prompt.
 If this does not work, close the terminal and open it again.
 
-<a name="tutorial"/>
+
+
 ## Getting hands on – the tutorial
+
 
 ### Getting help
 
@@ -154,7 +156,10 @@ Most programs also have a more exhaustive manual page accessed by typing `man PR
 Type `ls --help` to access the “list” help page.
 Type `man ls` to access the “list” manual page.
 
-Note that if you type `ls -h` you don’t get the help page for ls. That’s because -h is the option that print sizes of files in a human-readable format (like 1K, 234M, 2G etc) when combined with the -l option, like in ls -lh. Find the -h option when you access the ls help page with ls --help
+Note that if you type `ls -h` you don’t get the help page for ls. 
+That’s because -h is the option that print sizes of files in a human-readable format 
+(like 1K, 234M, 2G etc) when combined with the `-l` option, like in `ls -lh`. 
+Find the `-h` option when you access the ls help page with `ls --help`.
     
     
   </details>
@@ -371,9 +376,43 @@ file-size in human-readable format e.g., kB or MB.
 
   </details>
 
+
+### Tips and Tricks 
+
+#### Tab completion
+
+The tab button can be used to complete a file or directory name and 
+to do a quick lookup of commands. If, for example, a file has a very long name, you can save time by using the tab completion.
+Lets say you wanted to copy a file named `reallyLongFilename.txt` to the parent directory, type:
+`cp rea`… – hit the tab key … – this should auto-complete the filename to  `reallyLongFilename.txt` given this file is 
+present in the current folder.
+
+**Q** Create a file called `reallyreallyreally_long_filename.txt`,
+then type `ls -l ` (white space at the end!) and hit tab to fill in the filename.
+
+
+**Q** Create another file called 
+`reallyreallyreally_extralong_filename.txt` and then again 
+type `ls -l ` followed by trying to utilise the tab completion to fill in this even longer filename.
+
+As you probably found out by doing the above, if there are two or more files that start
+the same way then tab completion after typing `rea` will not fill in the whole name as there is ambiguity to which file you mean. In this instance pressing tab will fill in as much as it can (in this case ‘reallyreallyreally_’) and stop. Pressing the tab button twice will now display all the options of files that start with those letters, allowing you to see what extra letters you must type to complete the file.
+In this case you can type an extra ‘e’ (giving you `reallyreallyreally_e`) and then hit tab and it will complete it for you.
+
+#### Up-arrow
+
+The up-arrow key is very useful because pressing it repeatedly shows you the history of the commands you typed in the terminal previously.
+
+Per default, it will only remember the commands you have typed in the most recent session.
+But you can configure your terminal to remember also commands run in previous sessions or
+in sessions running in parallel.
+
+[Todo: add info on how to adapt .bash_rc; add info on using ctrl-R for history search] 
+
+
 **Q** Go to the folder `UnixBasics` in two steps,
 by first going into the folder `Data` and then into 
-the folder `UnixBasics`.
+the folder `UnixBasics`. You can try to use tab completion for this.
 
   <details>
     <summary>Show me how to do this.</summary>
