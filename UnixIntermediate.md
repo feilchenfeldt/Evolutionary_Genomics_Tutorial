@@ -9,15 +9,21 @@ Hannes Svardal
 
 You can think of a shell variable as a string (say, 'word'), 
 such as a directory name, filename, number, sentence etc.
-A variable is initialised using the name you designate for it. The name can be whatever you want (e.g. 'direc', 'superman', 'x', 'file' etc.) as long as it is a single word without spaces or special characters. The variable is then addressed using $ in front of its name. For example, if the variable is named 'direc' it is referenced using $direc.
+A variable is initialised using the name you designate for it. The name can be whatever you want (e.g. 'direc', 'superman', 'x', 'file' etc.) as long as it is a single word without spaces or special characters. The variable is then addressed using `$` in front of its name. For example, if the variable is named 'direc' it is referenced using `$direc`.
+
+You can assign values to variables using `=`, for example if you want to assign the value 'hello' to the variable `myvar`, you would execute
+
+        myvar='hello'
+
+This variable assignment will be remembered as long as your terminal is open.
 
 The contents of the variable can be changed within a loop automatically without having to do so yourself manually.
 
 ### Wildcards
 
-The asterisk * is referred to as a 'wildcard' symbol in unix. It allows for matching of filenames, directories etc. that have a certain sections of their name in common.
-For example, if the names of all the files you are interested in start with ‘result’ (e.g. result.txt, result.tree, result.nexus, resultFile, result) these will all be recognised using result*.
-Alternatively, if all files of interest end with .txt, you can loop over all of them using *.txt
+The asterisk `*` is referred to as a 'wildcard' symbol in unix. It allows for matching of filenames, directories etc. that have a certain sections of their name in common.
+For example, if the names of all the files you are interested in start with ‘result’ (e.g. `result.txt`, `result.tree`, `result.nexus`, `resultFile`, `result`) these will all be recognised using `result*`.
+Alternatively, if all files of interest end with `.txt`, you can loop over all of them using `*.txt`
 
 ### Repeating commands using loops
 
@@ -26,19 +32,23 @@ This can be accomplished by using the so called 'for loop'. Both variables and w
 
 A for-loop has the syntax:
 
+```
 for 'variable' in 'list'
 do
 'tasks to repeat for each item in list'
 done
+```
 
-Each section is written on a separate line (e.g. after ‘do’ hit enter’) and instead of a prompt the terminal will display a > to designate you are in a multi-line command.
-Alternatively, you can place a loop into a single line using the ; symbol to separate the commands, except for the line break after the 'do' where there should not be a ;
+Each section is written on a separate line (e.g. after `do` hit enter) and instead of a prompt the terminal will display a `>` to designate you are in a multi-line command.
+Alternatively, you can place a loop into a single line using the `;` symbol to separate the commands, except for the line break after the `do` where there should not be a `;`
 
-For example, we can use the command ‘echo’ to print something to the screen. This is used like
+For example, we can use the command `echo` to print something to the screen. This is used like
+
+    echo 'hello'
 
 which will print hello to the terminal.
 
-echo ‘hello’
+
 
 We can also define a variable which content would be the word 'hello'
 

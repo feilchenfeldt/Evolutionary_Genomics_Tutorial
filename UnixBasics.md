@@ -884,30 +884,6 @@ install programs. This can be solved by creating new environments,
 by carefully choosing channels (places for where programs will be installed) and 
 by using `mamba` instead of conda. (Not shown here)
 
-### Installing conda
 
-- Download conda
-
-```
-wget https://repo.anaconda.com/miniconda/Miniconda3-py38_23.11.0-2-Linux-x86_64.sh
-```
-
-(Note: For this tutorial we are using conda with python 3.8, 
-but you might choose more up-to-date versions for your other projects.)
-
-- Install miniconda
-
-```
-bash Miniconda3-py38_23.11.0-2-Linux-x86_64.sh -b
-```
-
-Once miniconda is installed, you need to initialise conda by running
-
-    ~/miniconda3/bin/conda init
-
-
-Now, every time you open a new terminal window, 
-you should see `(base)` at the lefthand side of your command line.
-This means that conda is activated.
 
 

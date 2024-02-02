@@ -17,7 +17,7 @@ After this activity, you should be able to
 
 ### How to follow this tutorial
 
-#### General user (UAntwerp Omics Techniques course students can skip this section)
+#### Software
 
 You need a computer with a unix command line and the following software installed
 - fastQC
@@ -26,7 +26,15 @@ You need a computer with a unix command line and the following software installe
 - bcftools
 - plink
 
-All these programs can be easily installed with conda or other package managers. You can search the internet on how to install them.
+All these programs can be easily installed with conda or other package managers. 
+
+If you have no other preference, install the packages with conda. 
+
+
+
+
+
+
 
 #### University of Antwerp students of Omics Techniques course
 
