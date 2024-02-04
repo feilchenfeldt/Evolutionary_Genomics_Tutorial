@@ -21,10 +21,15 @@ patterns and evolutionary of the different species of the radiation.
 
 ### The dataset
 
-The dataset is a variant call format (VCF) file containing biallelic
+The dataset are variant call format (VCF) file containing biallelic
 single nucleotide polymorphisms (SNPs) of 38 samples of different 
 Telmatherina species and of an outgroup, called 
 *Marosatherina ladigesi*.
+
+Each file only contains a subset (=small part) of a chromosome
+to make computation quicker.
+
+#### The metadata
 
 You can find a table with metadata, like sample ids, species names, etc., 
 here: 
@@ -103,15 +108,88 @@ which the above programs are installed.
 current directory. You are still in the same current directory you
 were in before.
 
+## Downloading and checking the data.
+
+### Investigate the metadata
+
+First, investigate the metadata file liked above ([Samples_metadata_sil38_simple.tsv](Data/TelmatherinaPopgen/Samples_metadata_sil38_simple.tsv).
+) to know which
+samples to expect. Just download it in your operating system's desktop environment
+(e.g. Windows), right click it, select *Open with* and search for *Microsoft Excel*
+or equivalent.
+
+Alternatively, you can download the metadata with `wget` or `curl` from the unix command
+line and investigate the file contents with `less`.
+
+<details>
+  <summary><i>I need help doing this.</i></summary> 
+
+```
+    wget --no-check-certificate https://raw.githubusercontent.com/feilchenfeldt/Evolutionary_Genomics_Tutorial/main/Data/TelmatherinaPopgen/Samples_metadata_sil38_simple.tsv
+    less -S -x 20 Samples_metadata_sil38_simple.tsv
+
+```
+
+
+
+</details>
+
+### Download the variant call data
+
+As for the variant call data, there are *VCF files* for different
+chromosomes: `Chr1, Chr2, Chr3, Chr4`. Choose one chromosome to start with
+
+<details>
+  <summary><i>More details</i></summary>
+If you are doing this tutorial in a group, I suggest
+that different users choose different chromosomes so that the
+results can be compared later. If you are
+doing this tutorial with an instructor, let the instructor assign
+a chromosome name to you. If you are doing this tutorial alone,
+you can just run all steps on all chromosomes, either manually or 
+automatised using a for loop, a shell script, a workflos system, and/or 'gnu parallel.
+</details>
+
+To download the data to your unix terminal, the following command
+
+> [!IMPORTANT]  
+> In the below command there is a paceholder `<chrom>`. You need to replace it by the
+> chromosome you have chosen to work with, e.g., `Chr1`
+
+```
+wget --no-check-certificate https://raw.github.com/feilchenfeldt/Evolutionary_Genomics_Tutorial/main/Data/TelmatherinaPopgen/Telmatherina38.pass.snps.biallelic.<chrom>.1M.vcf.gz
+```
+
+Type `ls -trsh` to confirm that you have a new files called `Telmatherina38.pass.snps.biallelic.<chrom>.1M.vcf.gz`.
+
+###
+
+Inspect the variant call data. (VCF) Variant call format is in principle a tab separated (tsv) text file. However, to optimise storage and read/write times, we 
+generally work with a compressed version of it. You can see from the ending `.vcf.gz`
+that this is a compressed file, because `.gz` stands for the compression tool `gzip`.
+
+Since the `.vcf` file is compressed, to view it, you could decompress it using `gzip -d <filename>` and then investigate the file with `head`, `tail`, `less -S` etc. 
+However, we do *NOT* want to decompress the file, because a real `.vcf` would be very big.
+
+To view the vcf file in text format, first decompress it using the program `bcftools view`, then pipe the result into the view command you want to use. For example, run
+
+    bcftools view Telmatherina38.pass.snps.biallelic.<chrom>.1M.vcf.gz | less -S
+
+
 ## Computing a pairwise difference matrix
 
-A straighforward way to assess genetic relationships between samples is to count the number of differences between them (i.e., average number of SNP differences between the two haplotypes in each of the samples). We will use the program called `plink` to calculate pairwise differences. 
+A straightforward way to assess genetic relationships between samples is to count
+the number of differences between them (i.e., average number of SNP differences between the two haplotypes in each of the samples). We will use the program called `plink` to calculate pairwise differences. 
 
 The command line for to calculate a distance matrix in plink is as follows
 
-    plink --double-id --vcf snps.pass.biallelic.vcf --out <output_base_name> --distance square
+    plink --double-id --vcf Telmatherina38.pass.snps.biallelic.<chrom>.1M.vcf.gz --out <output_base_name> --distance square
 
-Note: the flag `--double-id` is needed by plink to allow for underscore characters in the sample names (as is the case for our samples). Note2: It makes sense to give an informative name to `<output_base_name>`, e.g. the type of variants used (snps.pass) and/or the name of the chromosome you are using.
+Note: the flag `--double-id` is needed by plink to allow for underscore characters in the sample names (as is the case for our samples). Note2: It makes sense to give an informative name to `<output_base_name>`, e.g. the type of variants used (snps.pass) and/or the name of the chromosome you are using. I suggest you use `Telmatherina38.pass.snps.biallelic.<chrom>`, where chrom is replaced by your chromosome.
+
+So for chromosome 1, you would run
+
+        plink --double-id --vcf Telmatherina38.pass.snps.biallelic.Chr1.1M.vcf.gz --out Telmatherina38.pass.snps.biallelic.Chr1 --distance square
 
 Use `ls -tr` to display files in the directory with the most recently changed files displayed at the bottom. Which files were produced? Inspect the files using `cat`. 
 
@@ -123,7 +201,7 @@ Are the results for the different chromosomes consistent?
 
 Running clustering algorithms on the pairwise differences computed above is a simple way to obtain a tree of genetic relationships (phylogeny). One such algorithm, which has been shown to be consistent with the evolutionary process, is called Neighbour-Joining (NJ).
 
-Alexandros will show you how to construct a neighbour joining tree from the pairwise distance matrix and plot it. 
+Sophie will show you how to construct a neighbour joining tree from the pairwise distance matrix and plot it. 
 
 Also load the metadata file into R. This table gives information on the samples such as sampling location, sex, etc. Inspect this file.
 
@@ -135,7 +213,7 @@ Principal component analysis (PCA) is a useful tool to identify sample relations
 
 We will use `plink` to perform a PCA
 
-    plink --double-id --vcf snps.pass.biallelic.vcf --out <output_base_name> --pca
+    plink --double-id --vcf Telmatherina38.pass.snps.biallelic.<chrom>.1M.vcf.gz --out <output_base_name> --pca
 
 Use `ls -tr` to display files in the directory with the most recently changed files displayed at the bottom. Which files were produced? Inspect the files using `cat`. 
 
@@ -153,9 +231,9 @@ The manual of admixture can be found [here](https://dalexander.github.io/admixtu
 
 We will run `ADMIXTURE` with different numbers of ancestral populations (K). Admixture does not take a .vcf file as input, but it uses a different format called .bed. We will first use `plink` to convert the `.vcf` into a `.bed` file. We will only use SNPs with minor allele frequency greater than 5%.
 
-        plink --double-id --vcf snps.pass.biallelic.vcf --maf 0.05 --out <output_base_name> --make-bed
+        plink --double-id --vcf Telmatherina38.pass.snps.biallelic.<chrom>.1M.vcf.gz --maf 0.05 --out <output_base_name> --make-bed
 
-Now run admixture with values of K=2,3,..,7. Type `admixture --help` to see the syntax. Write a bash script to automatise running admixture for these different K values.
+Now run admixture with values of `K=2,3,..,7`. Type `admixture --help` to see the syntax. Optional: Write a bash script with for loop to automatise running admixture for these different `K` values.
 
 Plot the results for the differnt K values. 
 
@@ -163,11 +241,11 @@ Plot the results for the differnt K values.
 
 Now we want to look at divergence levels across chromosomes. For this we will compare genetic variation between the two populations with four samples each, Zooridge and Gifberg.
 
-Create two files, `gifberg.ids` and `zooridge.ids`, containing the sample names of Gifberg and Zooridge samples, respectively (one sample name per line). (Note that the sample names must be identical as in the `.vcf` file. Check sample names in the vcf.
+Create two files, `sarasinorum.ids` and `opudi.ids`, containing the sample names of *T. sarasinorum* and *T. opudi* samples, respectively (one sample name per line). (Note that the sample names must be identical as in the `.vcf` file. Check sample names in the vcf.
 
 Then, use `vcftools` to calculate fst in 10 kilobase windows, for each window advancing by 1 kilobase. 
 
-        vcftools --vcf snps.pass.biallelic.vcf --weir-fst-pop gifberg.ids --weir-fst-pop zooridge.ids --fst-window-size 10000 --fst-window-step 1000 --out <output_base_name>
+        vcftools --gzvcf  Telmatherina38.pass.snps.biallelic.<chrom>.1M.vcf.gz --weir-fst-pop opudi.ids --weir-fst-pop sarasinorum.ids --fst-window-size 10000 --fst-window-step 1000 --out <output_base_name>
         
 Load the resulting output file `chr15.windowed.weir.fst` into R and use Alexandros script to plot it.
 
