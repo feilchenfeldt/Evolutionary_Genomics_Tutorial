@@ -5,7 +5,7 @@
 Link to the instructions by Microsoft: https://learn.microsoft.com/en-us/windows/wsl/install. 
 Please check pre-requisites section to make sure your system is compatible and install accordingly.
 
-## Steps
+## Install the WSL
 - Run windows powerShell in administrator mode.
     - In search bar type `powerShell`. Right click on the app and click on Run as Administrator from the drop-down menu.
     - ![Open PowerShell](Images/run_powerShell.png)
@@ -13,6 +13,13 @@ Please check pre-requisites section to make sure your system is compatible and i
 ```
 wsl --install
 ```
+
+## Install Ubuntu
+
+Open the Micosoft Store. Search for Ubuntu. Install the App 
+called Ubuntu without and version number, just called *Ubuntu*.
+
+## Reboot and enter username and password
 
 - Reboot your computer
 - Once you reboot the ubuntu automatically starts launching itself. 
