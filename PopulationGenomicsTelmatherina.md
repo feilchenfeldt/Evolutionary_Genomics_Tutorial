@@ -1,30 +1,107 @@
-PopulationGenomics.md# Evolutionary Population Genomics Tutorial
-
-## Instruction
-
-Each students should start with a biallelic pass SNP vcf produced by the AlignmentVariantcalling tutorial. Each student should work with a different chromosome. For each analyses step, compare and discuss the results for the different chromosomes. 
+# Evolutionary Population Genomics of Sulawesi Silversides (*Telmatherinae*)
 
 ## Introduction
 
 ### Learning goals
 
-The goals of this tutorial is to learn to run basic population genomic analyses from a unix command line and plot and interpret the output using `R`.
+The goals of this tutorial is to learn to run basic population genomic analyses
+from a unix command line. In the tutorial [PlottingPopgenR](PlottingPopgenR.md)
+you will learn how to plot and interpret the output using `R`.
 
 ### The study system
 
-See AlignmentVariantcalling tutorial.
+The study system is the adaptive radiation of Sailfin Silversides
+from the Malili Lakes System in Sulawesi. Here are some slides
+by Els De Keyzer that introduce the study system.
 
 ### Biological questions
 
-See AlignmentVariantcalling tutorial.
+The objective is to gain a basic understanding of relatedness 
+patterns and evolutionary of the different species of the radiation.
 
 ### The dataset
 
-See AlignmentVariantcalling tutorial.
+The dataset is a variant call format (VCF) file containing biallelic
+single nucleotide polymorphisms (SNPs) of 38 samples of different 
+Telmatherina species and of an outgroup, called 
+*Marosatherina ladigesi*.
+
+You can find a table with metadata, like sample ids, species names, etc., 
+here: 
+[Samples_metadata_sil38_simple.tsv](Data/TelmatherinaPopgen/Samples_metadata_sil38_simple.tsv).
 
 ### The VCF file format
 
 VCF (Variant Call Format) is a  text file format that is used to store genetic variation such as SNPs or insertions/deletions. The full format specifications and valuable information about the different tags can be found [here](https://samtools.github.io/hts-specs/VCFv4.2.pdf).
+
+### How to get to a VCF file from sequencing reads
+
+The tutorial [AlignmentVariantCalling](AlignmentVariantCalling.md)
+teaches the basic steps how to obtain SNP data (variant calls)
+starting from Illumina sequencing reads and aligning them against
+a reference genome, but for a *different* dataset/study system.
+
+## Setting up the software environment
+
+We will need a unix/linux command line and the following programs
+installed:
+```
+  - plink
+  - bcftools
+  - vcftools
+  - admixture
+```
+
+If you don't have them installed on your system, which you can test
+by typing `<program_name>` or `which <program_name>`, we recommend installing
+them using `conda`. If you have not installed conda,
+follow the instructions in
+ [UnixSoftwareInstallationAndConda](UnixSoftwareInstallationAndConda.md).
+
+### Setting up conda environment
+
+To set up the conda environment, first create a conda environment
+file called `popgen.env.yaml` and add the following content:
+
+```
+name: popgen
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - plink
+  - bcftools
+  - vcftools
+  - admixture
+```
+
+  <details>
+    <summary>I need help to do this.</summary>
+
+    nano popgen.env.yaml
+ Then copy paste all the lines above between `name: popgen` and
+`- admixture` into the file. Press `ctrl o` to save and `ctrl x` to
+exit.
+
+  </details>
+
+Now that you have the environment file, create a new conda environment
+by executing
+
+    conda env create -f popgen.env.yaml
+
+Activate the new environment using
+
+    conda activate popgen
+
+Now you will see `(popgen)` at the right most side of your command
+line. This tells you that you are in the environment `popgen` in
+which the above programs are installed. 
+
+[!Tip] Note that entering a conda environment does not change your
+current directory. You are still in the same current directory you
+were in before.
 
 ## Computing a pairwise difference matrix
 
