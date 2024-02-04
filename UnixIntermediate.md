@@ -48,11 +48,9 @@ For example, we can use the command `echo` to print something to the screen. Thi
 
 which will print hello to the terminal.
 
-
-
 We can also define a variable which content would be the word 'hello'
 
-my_variable='hello' and print the content of the variable in the screen with echo $my_variable
+`my_variable='hello'` and print the content of the variable in the screen with `echo $my_variable`
 
 We can use a for-loop to print the number 1 to 10 to screen by typing
 

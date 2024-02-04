@@ -34,7 +34,7 @@ Some introductory slides can be found here: [UnixBasics.pdf](Resources/2024-01_U
 - Open a unix terminal
   - On Windows
     - install Ubuntu on the Windows subsystem for Linux (WSL)
-      - [Press here for help](HowToInstallWSL.md)
+      - [Press here for help](UnixOnWindows.md)
     - Press `Windows Key`, type *Ubuntu* and press `Enter`
   - On Linux:
     - Open a Terminal
