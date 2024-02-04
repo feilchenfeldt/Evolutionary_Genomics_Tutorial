@@ -239,15 +239,27 @@ Plot the results for the differnt K values.
 
 ## Divergence scan
 
-Now we want to look at divergence levels across chromosomes. For this we will compare genetic variation between the two populations with four samples each, Zooridge and Gifberg.
+Now we want to look at divergence levels across chromosomes. For this we will compare genetic variation between to species with five and seven samples, respectively: *T. opudi*  and *T. sarasinorum*.
 
-Create two files, `sarasinorum.ids` and `opudi.ids`, containing the sample names of *T. sarasinorum* and *T. opudi* samples, respectively (one sample name per line). (Note that the sample names must be identical as in the `.vcf` file. Check sample names in the vcf.
+Create two files, `sarasinorum.ids` and `opudi.ids`, containing the sample names of *T. sarasinorum* and *T. opudi* samples, respectively (one sample name per line). (Note that the sample names must be identical as in the `.vcf.gz` file. Check sample names in the vcf.
+
+<details>
+  <summary><i>I need help with this.</i></summary>
+You could either create these id files manually using `nano` and checking the sample ids
+in the metadata file. Or you can do it programatically, by searching for the species name, e.g.
+
+    grep 'opudi' Samples_metadata_sil38_simple.tsv | cut -f1 > opudi.ids
+    grep 'sarasinorum' Samples_metadata_sil38_simple.tsv | cut -f1 > sarasinorum.ids   
+
+I recommend build up such a command, first just the first step without pipe '|' to check the output. Then add the first `| command` etc. That way you can check whether the output is as expected. 
+
+</details>
 
 Then, use `vcftools` to calculate fst in 10 kilobase windows, for each window advancing by 1 kilobase. 
 
         vcftools --gzvcf  Telmatherina38.pass.snps.biallelic.<chrom>.1M.vcf.gz --weir-fst-pop opudi.ids --weir-fst-pop sarasinorum.ids --fst-window-size 10000 --fst-window-step 1000 --out <output_base_name>
         
-Load the resulting output file `chr15.windowed.weir.fst` into R and use Alexandros script to plot it.
+Load the resulting output file `<output_base_name>.windowed.weir.fst` into R and use the script to plot it.
 
 Discuss the results. How variable are divergence levels along chromosomes. What could be the reasons for this? How do you think would the plot change with larger sample sizes?
 
