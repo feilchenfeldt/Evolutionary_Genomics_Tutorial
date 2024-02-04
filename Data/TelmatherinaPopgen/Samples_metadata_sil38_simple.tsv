@@ -1,0 +1,39 @@
+individual_id	species	group	sex	colour	sampling_date	catchment	sampling_location	study	fabian_ID	read_length	figure_id
+AB1224	Telmatherina abendanoni	sharpfin	M	Yellow	14/11/2002	Lake Matano	Tra04	sil21	1224	150	AB1224
+AB2013	Telmatherina abendanoni	sharpfin	M	Black	26/11/2002	Lake Matano	Tra06	sil21	2013	150	AB2013
+EL2015	Telmatherina spec. elongated	sharpfin	F		26/11/2002	Lake Matano	Tra06	sil21	2015	150	EL2015
+EL2016	Telmatherina spec. elongated	sharpfin	M	Yellow	26/11/2002	Lake Matano	Tra06	sil21	2016	150	EL2016
+EY1325	Telmatherina spec. elongated	sharpfin	F		14/11/2002	Lake Matano	Tra04	sil21	1325	150	EY1325
+OP4396	Telmatherina opudi	sharpfin	M	Blue	19/11/2006	Lake Matano	Lawa-mouth	sil21	4396	150	OP4396
+OP4397	Telmatherina opudi	sharpfin	M	Blue	19/11/2006	Lake Matano	Lawa-mouth	sil21	4397	150	OP4397
+SA8719	Telmatherina sarasinorum	sharpfin	M		29/06/2010	Lake Matano	B9_1	sil21	8719	150	SA8719
+TL1240	Telmatherina thicklip	sharpfin	M		14/11/2002	Lake Matano	Tra04	sil21	1240	150	TL1240
+TL1309	Telmatherina thicklip	sharpfin	M		14/11/2002	Lake Matano	Tra04	sil21	1309	150	TL1309
+WA1238	Telmatherina cf. wahjui	sharpfin	M		14/11/2002	Lake Matano	Tra04	sil21	1238	150	WA1238
+WA1436	Telmatherina cf. wahjui	sharpfin	F		14/11/2002	Lake Matano	Tra04	sil21	1436	150	WA1436
+AB1831	Telmatherina abendanoni	sharpfin	M	brownbase-greyfin	18/11/2002	Lake Matano	Tra01	sil21	1831	150	AB1831
+SA4094	Telmatherina sarasinorum	sharpfin	M	Blue	14/11/2006	Lake Matano	Lawa-mouth	sil21	4094	150	SA4094
+SA4324	Telmatherina sarasinorum	sharpfin	M	Blue	11/12/2006	Lake Matano	Lawa-mouth	sil21	4324	150	SA4324
+SA4364	Telmatherina sarasinorum	sharpfin	M	Blue	18/11/2006	Lake Matano	Lawa-Unterlauf	sil21	4364	150	SA4364
+OP8717	Telmatherina sarasinorum	sharpfin	M	Blackfin	29/06/2010	Lake Matano	B9_1	sil21	8717	150	OP8717
+SA4095	Telmatherina sarasinorum	sharpfin	M	Blue	14/11/2006	Lake Matano	Lawa-mouth	sil21	4095	150	SA4095
+SA8715	Telmatherina sarasinorum	sharpfin	M		29/06/2010	Lake Matano	B9_1	sil21	8715	150	SA8715
+TL8714	Telmatherina thicklip	sharpfin	F		29/06/2010	Lake Matano	B8_4	sil21	8714	150	TL8714
+WA1315	Telmatherina cf. wahjui	sharpfin	M		14/11/2002	Lake Matano	Tra04	sil21	1315	150	WA1315
+AS129	Telmatherina antoniae small	roundfin	M	Yellow	15/10/2002	Lake Matano	Tra01	sil38	129	150	AS129
+PR216	Telmatherina prognatha	roundfin	M	Yellow	20/10/2002	Lake Matano	Tra01	sil38	216	150	PR216
+PR222	Telmatherina prognatha	roundfin	F		20/10/2002	Lake Matano	Tra01	sil38	222	150	PR222
+AL225	Telmatherina antoniae large	roundfin	M	Blue	20/10/2002	Lake Matano	Tra01	sil38	225	150	AL225
+AL226	Telmatherina antoniae large	roundfin	M	Yellow	20/10/2002	Lake Matano	Tra01	sil38	226	150	AL226
+AL233	Telmatherina antoniae large	roundfin	F		20/10/2002	Lake Matano	Tra01	sil38	233	150	AL233
+PR444	Telmatherina prognatha	roundfin	M?	Blue	04/11/2002	Lake Matano	Tra01	sil38	444	150	PR444
+OP719	Telmatherina opudi	sharpfin	M	Black	08/11/2002	Lake Matano	Tra05	sil38	719	150	OP719
+OP743	Telmatherina opudi	sharpfin	F		08/11/2002	Lake Matano	Tra05	sil38	743	150	OP743
+BO4164	Telmatherina bonti	bonti	F		14/11/2006	Lake Matano	Lawa-mouth	sil38	4164	150	BO4164
+BO4360	Telmatherina bonti	bonti	M	Yellow	18/11/2006	Lake Matano	Lawa-Unterlauf	sil38	4360	150	BO4360
+BO4365	Telmatherina opudi	sharpfin	M	Yellow	18/11/2006	Lake Matano	Lawa-Unterlauf	sil38	4365	150	BO4365
+BO4384	Telmatherina bonti	bonti	M	Yellow	18/11/2006	Lake Matano	Lawa-Unterlauf	sil38	4384	150	BO4384
+MP2   	Marosatherina ladigesi	ladigesi						sil38                               		150	MP2   
+MP3	Marosatherina ladigesi	ladigesi						sil38		150	MP3
+AS131	Telmatherina antoniae small	roundfin	F	Yellow	15/10/2002	Lake Matano	Tra01	sil38	131	150	AS131
+AS330	Telmatherina antoniae small	roundfin	M	Blue	31/10/2002	Lake Matano	Tra03	sil38	330	150	AS330
