@@ -13,7 +13,7 @@ to install the WSL](UnixOnWindows.md)).
 ### Learning goals
 
 The goals of this tutorial is to learn to run basic population genomic analyses
-from a unix command line. In the tutorial [PlottingPopgenR](PlottingPopgenR.md)
+from a unix command line. In the tutorial [PlottingTelmatherinaR](PlottingTelmatherinaR.md)
 you will learn how to plot and interpret the output using `R`.
 
 ### The study system
