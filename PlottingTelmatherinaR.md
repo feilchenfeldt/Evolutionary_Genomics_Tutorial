@@ -15,7 +15,7 @@ Here we want to plot the results of the tutorial on basic population genomics:
 [PopulationGenomicsTelmatherina](PopulationGenomicsTelmatherina.md).
 
 If you have not managed to obtain the data, you can download it here for chromosome 1:
-[TelmatherinaPopgen_results.zip](Results/TelmatherinaPopgen/TelmatherinaPopgen_results.zip)
+[TelmatherinaPopgen_results_Chr1.zip](Results/TelmatherinaPopgen/TelmatherinaPopgen_results_Chr1.zip)
 
 
 
@@ -67,7 +67,7 @@ setwd("/home/johndoe/popgen")
 On windows, your filepath might of course look a bit different, like
 
 ``` r
-setwd("C:\Users/Johndoe/popgen")
+setwd("C:\Users\Johndoe\popgen")
 ```
 
 ### Plotting the distance matrix
@@ -318,11 +318,11 @@ into R:
 
 ``` r
 #Reading in the .eigenvec and .eigenval files
-eigenvec <- read_delim(paste(outbase,".eigenvec", sep=''), delim = " ", col_names = FALSE)
-eigenval <- read_delim(paste(outbase,".eigenval", sep=''), delim = " ", col_names = FALSE)
+eigenvec <- read_delim("Telmatherina38.pass.snps.biallelic.Chr1.eigenvec", delim = " ", col_names = FALSE)
+eigenval <- read_delim("Telmatherina38.pass.snps.biallelic.Chr1.eigenval", delim = " ", col_names = FALSE)
 
 #Loading the metadata file
-metadata <- read.csv(file = "Samples_metadata_sil38_simple.tsv", sep='\t')
+metadata <- read.csv(file = "Samples_metadata_sil38_simple.tsv", sep = "\t")
 ```
 
 Next, let’s calculate how much variation does each principal axis
@@ -372,13 +372,13 @@ results faster we will use a for loop that reads the specific naming
 pattern of the .Q files and loads them in a list of dataframes:
 
 ``` r
-samples<-read.table("Path_to_working_directory\\chr15.fam")[,1]
+samples<-read.table("Telmatherina38.pass.snps.biallelic.Chr1.fam")[,1]
 
 #read in all runs and save each dataframe in a list
 runs<-list()
 #read in log files
 for (i in 1:6){
-  runs[[i]]<-read.table(paste0("chr15.maf0p05.", i+1, ".Q")) #This is a way of loading multiple files using a series of numbers in the file name
+  runs[[i]]<-read.table(paste0("Telmatherina38.pass.snps.biallelic.Chr1.", i+1, ".Q")) #This is a way of loading multiple files using a series of numbers in the file name
 }
 ```
 
@@ -410,6 +410,12 @@ Okabe-Ito pallette to colour the clusters and each sample receives a
 label based on the sample labels we loaded in the first step. Finally,
 with **las=2** the labels are rotated by 90 degrees.
 
+In order to make the clustering more obvious, the
+samples on the graphs should be rearranged based on their cluster assignment.
+How can this be achieved?
+
+<!--
+
 In order to make the clustering more obvious, let’s re-arrange the
 samples on the graphs based on their cluster assignment. The proper way
 to do this is to use the cluster assignments in the cluster with the
@@ -435,13 +441,14 @@ for(i in 1:6){
   barplot(t(as.matrix(runs[[i]])),xlim = c(0,10), width=0.4,main = paste0("K=", i+1), col=palt[c(2:i+2)], ylab="Ancestry", border="black", names.arg = samples_reorganized, las=2)
 }
 ```
+-->
 
 ### Plotting the Fst results
 
 The first step is to load the Fst results onto R:
 
 ``` r
-fst <- read_tsv("Path_to_working_directory\\chr15.windowed.weir.fst")
+fst <- read_tsv("Telmatherina38.pass.snps.biallelic.chr1.windowed.weir.fst")
 str(fst)
 ```
 
@@ -460,8 +467,8 @@ ggplot2 scatterplot:
 ``` r
 fst_plot<-ggplot(fst) + 
   geom_point(aes(x=BIN_START, y=WEIGHTED_FST))+
-  ggtitle("Fst-Chromosome 15") + #title of graph
-  xlab(paste("Mb Chromosome ",15,sep="") ) + #x'x axis label
+  ggtitle("Fst-Chromosome 1") + #title of graph
+  xlab(paste("Mb Chromosome ",1,sep="") ) + #x'x axis label
   ylab(expression(F[ST])) + #y'y axis label
   theme_minimal() 
 fst_plot
