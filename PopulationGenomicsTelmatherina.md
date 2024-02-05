@@ -1,5 +1,13 @@
 # Evolutionary Population Genomics of Sulawesi Silversides (*Telmatherinae*)
 
+
+>[!Important] This tutorial should be run on a Linux terminal environment, as you can get on a Linux system, or on Microsoft Windows using the Windows Subsystem for Linux (WSL) ([Instructions
+to install the WSL](UnixOnWindows.md)).
+>This tutorial has not been tested on MacOS
+> so some things might now work. A specific difference is that `wget` is not available on
+> MacOS, so you will need to use `curl -O` instead of `wget` each time it appears.
+
+
 ## Introduction
 
 ### Learning goals
@@ -110,6 +118,39 @@ which the above programs are installed.
 current directory. You are still in the same current directory you
 were in before.
 
+  <details>
+    <summary>Troubleshooting the software setup</summary>
+## Troubleshooting the software setup
+>[!Important] ONLY FOLLOW THIS SECTION IF YOU COULD NOT SET UP THE CONDA ENVIRONMENT ABOVE.
+
+Download `plink` manually
+
+    wget --no-check-certificate https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20231211.zip
+
+Unzip the archive
+
+    unzip plink_linux_x86_64_20231211.zip
+ 
+Add the current directory to your software path
+
+    echo 'export PATH=.:$PATH' >> ~/.bashrc
+    source .bashrc
+
+</details>
+
+To test whether it is working, type `plink`, you should get an output like
+
+```
+# plink
+PLINK v1.90b7.2 64-bit (11 Dec 2023)           www.cog-genomics.org/plink/1.9/
+(C) 2005-2023 Shaun Purcell, Christopher Chang   GNU General Public License v3
+
+  plink <input flag(s)...> [command flag(s)...] [other flag(s)...]
+  plink --help [flag name(s)...]
+  ...
+  ...
+  ...
+```
 ## Downloading and checking the data.
 
 ### Investigate the metadata
