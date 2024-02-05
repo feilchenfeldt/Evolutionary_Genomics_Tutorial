@@ -370,15 +370,19 @@ library(ape)
 library(ggtree)
 ```
 
+
+
 ### Plotting the distance matrix
 
 The first step is to load into R the distance matrix itself as a data
 frame, as well as the sample ID to be used as labels:
 
 ``` r
-plink.dist <- read.table(file = "Path_to_working_directory\\chr17.dist", header = FALSE, sep = "\t", dec = ".") #Distance matrix
+plink.dist <- read.table(file = "<Path_to_working_directory>/<output_base_name>.dist",
+                            header = FALSE, sep = "\t", dec = ".") #Distance matrix
 
-plink.id <- as.data.frame(read.table(file = "Path_to_working_directory\\chr17.dist.id", header = FALSE, sep = "\t", dec = ".")) #Sample IDs
+plink.id <- as.data.frame(read.table(file = "<Path_to_working_directory>/<output_base_name>.dist.id", 
+                            header = FALSE, sep = "\t", dec = ".")) #Sample IDs
 
 str(plink.dist)
 ```
@@ -389,7 +393,7 @@ incorporate our sample IDs as the matrix dimension names.
 ``` r
 plink.matrix <- as.matrix(plink.dist)
 
-dimnames(plink.matrix) <- list(plink.id[,1],plink.id[,1])
+dimnames(plink.matrix) <- list(plink.id[,1], plink.id[,1])
 
 plink.matrix
 ```
@@ -556,11 +560,11 @@ into R:
 
 ``` r
 #Reading in the .eigenvec and .eigenval files
-eigenvec <- read_delim("Path_to_working_directory\\chr15.eigenvec", delim = " ", col_names = FALSE)
-eigenval <- read_delim("Path_to_working_directory\\chr15.eigenval", delim = " ", col_names = FALSE)
+eigenvec <- read_delim(paste(outbase,".eigenvec", sep=''), delim = " ", col_names = FALSE)
+eigenval <- read_delim(paste(outbase,".eigenval", sep=''), delim = " ", col_names = FALSE)
 
 #Loading the metadata file
-metadata <- read.table(file = "Path_to_working_directory\\Samples_metadata_sil38_simple.tsv")
+metadata <- read.csv(file = "Samples_metadata_sil38_simple.tsv", sep='\t')
 ```
 
 Next, let’s calculate how much variation does each principal axis
@@ -597,6 +601,10 @@ ggplot(data = eigenvec) +
        colour = "species") +#adding the percent variance explained colouring the points
   theme_minimal() #removes gray background of ggplot
 ```
+
+As expected, the first axis of the PCA loads on the difference between 
+**Marosatherina** and **Telmatherina**. Repeat the same plot as above, but plot `PC2` against
+`PC3`. This will be more informative about the Malili lakes *Telmatherina*.
 
 ### ADMIXTURE plot
 

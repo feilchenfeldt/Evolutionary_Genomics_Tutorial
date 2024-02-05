@@ -12,7 +12,7 @@ you will learn how to plot and interpret the output using `R`.
 
 The study system is the adaptive radiation of Sailfin Silversides
 from the Malili Lakes System in Sulawesi. Here are some slides
-by Els De Keyzer that introduce the study system.
+by Els De Keyzer that introduce the study system: [Silversides_introduction](Resources/Silversides_introduction.pdf)
 
 ### Biological questions
 
@@ -27,7 +27,9 @@ Telmatherina species and of an outgroup, called
 *Marosatherina ladigesi*.
 
 Each file only contains a subset (=small part) of a chromosome
-to make computation quicker.
+to make computation quicker. Specifically, each file contains a region of 1 megabase 
+(= 1 000 000 basepairs), but the file only contains the SNPs in this region,
+which is much less than the region size.
 
 #### The metadata
 
@@ -168,8 +170,8 @@ Inspect the variant call data. (VCF) Variant call format is in principle a tab s
 generally work with a compressed version of it. You can see from the ending `.vcf.gz`
 that this is a compressed file, because `.gz` stands for the compression tool `gzip`.
 
-Since the `.vcf` file is compressed, to view it, you could decompress it using `gzip -d <filename>` and then investigate the file with `head`, `tail`, `less -S` etc. 
-However, we do *NOT* want to decompress the file, because a real `.vcf` would be very big.
+Since the `.vcf` file is compressed, to view it, you could decompress it using `gzip -dc <filename>.vcf.gz > <filename>.vcf` and then investigate the file with `head`, `tail`, `less -S` etc. 
+However, do **NOT** run the decompression with a real vcf, because a real `.vcf` would be very big.
 
 To view the vcf file in text format, first decompress it using the program `bcftools view`, then pipe the result into the view command you want to use. For example, run
 
@@ -220,6 +222,8 @@ Use `ls -tr` to display files in the directory with the most recently changed fi
 Use `R` to plot the PCA and discuss the results.
 
 Sometimes it makes sense to remove rare SNPs (SNPs where only a few individuals are different from the rest) from the PCA. This can give more resolution to differentiate different clades. Try rerunning plink pca with the option `--maf 0.05` to exclude SNPs with less the 5% allele frequency. Does the resulting PCA plot look any differnt?
+
+
 
 ## Admixture analysis 
 
