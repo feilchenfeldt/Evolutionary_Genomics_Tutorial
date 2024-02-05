@@ -5,12 +5,19 @@ based on material by Alexandros Bantounas Alexandros.Bantounas@uantwerpen.be
 If you need some basic introduction to `R`, follow the [RBasics](RBasics.md) tutorial
 or consult online resources.
 
+The R code for the first part of this tutorial (without explanations) can be found here: 
+[PlottingTelmatherina.R](PlottingTelmatherina.R). You can copy paste it into an R script
+or R studio.
+
 ## Plotting the genomics results
 
 Here we want to plot the results of the tutorial on basic population genomics: 
 [PopulationGenomicsTelmatherina](PopulationGenomicsTelmatherina.md).
 
-If you have not managed to obtain the data, you can download
+If you have not managed to obtain the data, you can download it here for chromosome 1:
+[TelmatherinaPopgen_results.zip](Results/TelmatherinaPopgen/TelmatherinaPopgen_results.zip)
+
+
 
 In order to plot the genomics results, certain output files need to be
 downloaded to the local drive and in our working/project directory.
@@ -26,17 +33,42 @@ Download the following files:
 
 5.  The **windowed.weir.fst** file for the Fst analysis.
 
-It is also important to install the necessary packages. In this tutorial
+The first time running this, it is important to install the necessary packages. 
+In this tutorial
 we will use three packages: **tidyverse**, **ape** and **ggtree**.
+The installation only needs to be run once.
 
 ``` r
 install.packages(c("tidyverse", "ape","ggtree"))
+```
+
+If `ggtree` does not install, try the following:
+
+```r
+library(BiocManager)
+BiocManager::install("ggtree")
+```
+
+Then load the libraries needed
+
+```r
 library(tidyverse)
 library(ape)
 library(ggtree)
 ```
 
+Next, it is useful to set the directory in which you have your popgen results as
+current working directory. For example, if your data is in `/home/johndoe/popgen`, use
 
+``` r
+setwd("/home/johndoe/popgen")
+```
+
+On windows, your filepath might of course look a bit different, like
+
+``` r
+setwd("C:\Users/Johndoe/popgen")
+```
 
 ### Plotting the distance matrix
 
@@ -44,13 +76,14 @@ The first step is to load into R the distance matrix itself as a data
 frame, as well as the sample ID to be used as labels:
 
 ``` r
-plink.dist <- read.table(file = "<Path_to_working_directory>/<output_base_name>.dist",
-                            header = FALSE, sep = "\t", dec = ".") #Distance matrix
+plink.dist <- read.table(file = "Telmatherina38.pass.snps.biallelic.Chr1.dist",
+                         header = FALSE, sep = "\t", dec = ".") #Distance matrix
 
-plink.id <- as.data.frame(read.table(file = "<Path_to_working_directory>/<output_base_name>.dist.id", 
-                            header = FALSE, sep = "\t", dec = ".")) #Sample IDs
+plink.id <- as.data.frame(read.table(file = "Telmatherina38.pass.snps.biallelic.Chr1.dist.id", 
+                                     header = FALSE, sep = "\t", dec = ".")) #Sample IDs
 
 str(plink.dist)
+
 ```
 
 The next step is to transform the data.frame into a matrix and
@@ -69,12 +102,12 @@ format (which is a much more tidy way of representing data in R).
 
 ``` r
 plink.dist.df<-  as_tibble(plink.matrix, rownames="A") %>%
-    pivot_longer(-A,names_to = "B", values_to = "distances") 
+  pivot_longer(-A,names_to = "B", values_to = "distances") 
 
 view(plink.dist.df)
 ```
 
-Finally we get to plot the distance matrix! We will use a heatmap to
+Finally, we get to plot the distance matrix! We will use a heatmap to
 represent our distance matrix, encoded by the **geom_tile()** command in
 ggplot2.
 
@@ -127,13 +160,43 @@ plot(x=NJ.tree, type="unrooted", cex=0.5)
 plot(x=NJ.tree)
 ```
 
-However, we may wish to “decorate” our tree by highlighting specific
+However, we know from the distance matrix that MP2 and MP3 are clear outgroups
+(very distant from everything else). We may want to use them to root the tree,
+and then plot a tree without those outgroups to get more resolution for the
+ingroups.
+
+To achevie this, do the following:
+``` r
+#remove MP3, root to MP2 and then remove MP2
+NJ.tree2 <- drop.tip(NJ.tree, "MP3")
+NJ.tree3 <- root(NJ.tree2, outgroup = "MP2")
+NJ.tree4 <- drop.tip(NJ.tree3, "MP2")
+```
+
+
+``` r
+#Plot the unrooted NJ tree
+plot(x=NJ.tree4, type="unrooted", cex=0.5)
+
+#Plot a rooted NJ tree
+plot(x=NJ.tree4)
+```
+
+For other applications below, it will be useful to store the order of samples
+in the tree:
+``` r
+#get tip labels in the the order of the phylogeny
+is_tip <- NJ.tree4$edge[,2] <= length(NJ.tree4$tip.label)
+ordered_tips <- NJ.tree4$edge[is_tip, 2]
+labels_order<- NJ.tree4$tip.label[ordered_tips]
+```
+Furthermore, we may wish to “decorate” our tree by highlighting specific
 edges or clusters based on our metadata file. In order to do that, we
 first have to save our tree in a file in our working directory. A simple
 tree file format is the Newick format:
 
 ``` r
-write.tree(NJ.tree, file = "NJ.tree.nwk", append = FALSE,
+write.tree(NJ.tree4, file = "NJ.tree.nwk", append = FALSE,
            digits = 10, tree.names = FALSE)
 ```
 
@@ -141,7 +204,7 @@ Now let’s load our tree into R and use the ggtree package to modify and
 decorate our NJ tree:
 
 ``` r
-tree <- read.tree("Path_to_working_directory\\NJ.tree.nwk")
+tree <- read.tree("NJ.tree.nwk")
 ```
 
 The ggtree package introduces a dedicated **geom_tree()** function to
@@ -161,6 +224,11 @@ ggtree(tree, branch.length='none')+ geom_tiplab()
 ggtree(tree, layout="ellipse", branch.length="none")+ geom_tiplab()
 ggtree(tree, branch.length='none', layout='circular')+ geom_tiplab()
 ggtree(tree, layout="daylight", branch.length = 'none')+ geom_tiplab()
+
+ggplot(tree) + geom_tree() + theme_tree()+ geom_tiplab()
+
+ggtree(tree)+ geom_text(aes(label=node), hjust=-.3) #This shows node labels
+#39 (sharpfins), 70 (bonti/river), 62 (roundfins)
 ```
 
 As you can see different tree types can be used to convey different
@@ -185,32 +253,56 @@ clade we wish to highlight. Then we run the following code:
 
 ``` r
 ggtree(tree) + 
-  geom_tiplab() + 
-  geom_cladelabel(node=28, label="North", 
-                  color="blue", offset=.8, align=TRUE) + 
-  theme_tree2() + #cleaner tree theme
-  xlim(0, 70) + #increasing x axis maximum to help with label alignment
-  theme_tree()
+  geom_tiplab(align = TRUE) + 
+  geom_hilight(node=39, fill="blue") +
+  geom_hilight(node=70, fill="green") +
+  geom_hilight(node=62, fill="red") +
+  geom_cladelabel(node=39, label="Sharpfin", 
+                  color="blue", offset=180, align=TRUE) +
+  geom_cladelabel(node=70, label="Bonti/River", 
+                  color="green", offset=180, align=TRUE) +
+  geom_cladelabel(node=62, label="Roundfin", 
+                  color="red", offset=180, align=TRUE) +
+  theme_tree() +
+  coord_cartesian(xlim = c(0, 1300))
+
+aligned_tree <- ggtree_object + geom_tiplab(align = TRUE, aes(label= "")) + theme(plot.margin = unit(c(0, 0, 0, 0), "cm"))
+
+  
+```
+### Ordering the distance matrix by tree order
+
+Now that we have the order of samples in the tree, we can use this to re-order
+samples in the distance matrix, and also remove the highly divergent TM
+
+```r
+#remove MP2 and MP3 - remove rows where A or B is MP2 or MP3
+plink.dist.df2 <- plink.dist.df[plink.dist.df$A != "MP2" & plink.dist.df$A != "MP3" & plink.dist.df$B != "MP2" & plink.dist.df$B != "MP3", ]          
+
+#change the order of the samples according to the phylogeny
+plink.dist.df2$A <- factor(plink.dist.df2$A, levels = labels_order)
+plink.dist.df2$B <- factor(plink.dist.df2$B, levels = labels_order)
+
+
+plink.dist.df2 %>%
+  ggplot(aes(x=A, y=B, fill=distances)) +
+  geom_tile()
+
+plink.dist.df2 %>%
+  ggplot(aes(x=A, y=B, fill=distances)) +
+  geom_tile()+
+  coord_equal()+ #making the tiles into squares
+  #scale_fill_gradient(low = "#FF0000", high = "#FFFFFF", name=NULL) + #changing the colour scheme
+  scale_fill_distiller(palette = "Spectral", direction = -1) + 
+  labs(x="Samples", y="Samples") + #changing axis labels
+  theme_classic()+ #gets rid of the grey background of the base ggplot2 theme
+  theme(axis.line = element_blank(), #removes axes lines and ticks
+        axis.ticks = element_blank(),
+        axis.text = element_text(size=8), #changes the font size
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) #rotates x axis labels by 90 degrees to make them readable
+
 ```
 
-This code added lines to the side indicating the labels associated with
-a specific clade from our metadata. However, it may be easier to
-highlight the entire clade on the tree. This can be performed using the
-following code:
-
-``` r
-ggtree(tree) + 
-  geom_tiplab() + 
-   geom_hilight(node=28, fill="purple") +
-  geom_cladelabel(node=28, label="North", 
-                  color="blue", offset=.8, align=TRUE) + 
-  theme_tree2() + #cleaner tree theme
-  xlim(0, 70) + #increasing x axis maximum to help with label alignment
-  theme_tree()
-```
-
-Try to use the code above to highlight the another clade from the
-metadata file in the tree.
 
 ### Plotting genomic Principal Component Analysis (PCA)
 
