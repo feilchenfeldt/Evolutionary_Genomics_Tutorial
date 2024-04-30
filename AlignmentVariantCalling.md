@@ -28,7 +28,8 @@ You need a computer with a unix command line and the following software installe
 
 All these programs can be easily installed with conda or other package managers. 
 
-If you have no other preference, install the packages with conda. 
+If you have no other preference, install the packages with conda. If you don't know how to do this,
+please find instructions [here](UnixSoftwareInstallationAndConda.md).
 
 
 
@@ -36,38 +37,55 @@ If you have no other preference, install the packages with conda.
 
 
 
-#### University of Antwerp students of Omics Techniques course
+[//]: # (#### University of Antwerp students of Omics Techniques course)
 
-To run the analyses, you first need to connect to the CalcUA login node the way that you had learned it. From there you will connect to a different server/computer where you can run compuations.
+[//]: # ()
+[//]: # (To run the analyses, you first need to connect to the CalcUA login node the way that you had learned it. From there you will connect to a different server/computer where you can run compuations.)
 
-Connect to leibniz the way that you have learned it, e.g., 
+[//]: # ()
+[//]: # (Connect to leibniz the way that you have learned it, e.g., )
 
-`ssh -i <path_to_key_file> <username>@login1-leibniz.hpc.uantwerpen.be`
+[//]: # ()
+[//]: # (`ssh -i <path_to_key_file> <username>@login1-leibniz.hpc.uantwerpen.be`)
 
-Note that things in <> should be replaced by the value approapriate for your case, e.g., <username> could be replaced by your vscXXXX username. On windows, use MobaXterm to establish connection. Hint: your key file is likely located in a hidden subfolder of your home folder: `~/.ssh/`
-  
-Once on the leibniz login node, connect to our private node (*r0c03cn1*)
+[//]: # ()
+[//]: # (Note that things in <> should be replaced by the value approapriate for your case, e.g., <username> could be replaced by your vscXXXX username. On windows, use MobaXterm to establish connection. Hint: your key file is likely located in a hidden subfolder of your home folder: `~/.ssh/`)
 
-`ssh r0c03cn1`
-  
-On the privade node, activate a compute environment that has all software installed that we will need.
-Exectute the following commands
+[//]: # (  )
+[//]: # (Once on the leibniz login node, connect to our private node &#40;*r0c03cn1*&#41;)
 
- ```
- /data/antwerpen/grp/asvardal/miniconda3/bin/conda init
-  
- echo 'conda activate hscon5' >> ~/.bashrc
- ```
- 
-  Close all byobu windows and close the ssh connection by typing `exit` multiple times. Log into the cluster again using `ssh` or MobaXterm and start a byobu session.
-  
- Run 
-  
-  /data/antwerpen/grp/asvardal/miniconda3/bin/conda activate
-  
-Start a byobu session
-  
-`byobu`
+[//]: # ()
+[//]: # (`ssh r0c03cn1`)
+
+[//]: # (  )
+[//]: # (On the privade node, activate a compute environment that has all software installed that we will need.)
+
+[//]: # (Exectute the following commands)
+
+[//]: # ()
+[//]: # ( ```)
+
+[//]: # ( /data/antwerpen/grp/asvardal/miniconda3/bin/conda init)
+
+[//]: # (  )
+[//]: # ( echo 'conda activate hscon5' >> ~/.bashrc)
+
+[//]: # ( ```)
+
+[//]: # ( )
+[//]: # (  Close all byobu windows and close the ssh connection by typing `exit` multiple times. Log into the cluster again using `ssh` or MobaXterm and start a byobu session.)
+
+[//]: # (  )
+[//]: # ( Run )
+
+[//]: # (  )
+[//]: # (  /data/antwerpen/grp/asvardal/miniconda3/bin/conda activate)
+
+[//]: # (  )
+[//]: # (Start a byobu session)
+
+[//]: # (  )
+[//]: # (`byobu`)
 
   
 
@@ -76,25 +94,43 @@ Start a byobu session
 ## The study system
  
 See presentation slides by Henrique Leitao
+
+## The data
+
+The data for this tutorial is available in the file [alignment_variant_calling.tar.gz](https://drive.google.com/file/d/1pFe5n1jeE2e05ZVOkoWNFJT2oVmDZtt5/view?usp=sharing)
+from google drive. Download it. 
+
+If you are working on a Windows computer, copy or move the data to the home folder in
+your Windows subsystems for Linux (WSL). To do this,
+use the `cp` command inside your WSL. 
+
+Where can you find your Windows files within the WSL?
+
+
+
+  <details>
+    <summary>*Hint: </summary>
+    
+    
+    Your Windows C drive is mounted in the WSL as `/mnt/c/` etc. So depending on where you have downloaded your file 
+    in Windows, it could for example be in `/mnt/c/Users/Hannes/Downloads`.
+    To simplify this, you can also create a symbolic link in your homefolder as described [here](https://github.com/feilchenfeldt/Evolutionary_Genomics_Tutorial/blob/main/UnixOnWindows.md#link-your-windows-folder-to-unix-home-folder).
+  </details>
+
   
 ## Read aligment 
   
   ### Preparation
   
-[If not already done] Create a folder `<firstname_lastname>` in `/scratch/antwerpen/grp/aomicscourse`
+The data is contained in a compressed `.tar.gz` archive named `alignment_variant_calling.tar.gz`. Decompress this archive
+using `tar`. Search online how to do this by internet searching "decompress tar.gz archive". 
  
-  <details>
-    <summary>Show me how to do this.</summary>
-    
-    
-    cd /scratch/antwerpen/grp/aomicscourse
-    mkdir max_mustermann
-    
-    
-  </details>
+[//]: # (tar -xvzf alignment_variant_calling.tar.gz)
   
+This should have yielded a folder called `alignment_variant_calling/`. Inspect the contents of this folder
+
   
-  You will receive reads of the follwing 20 samples
+  Find the sequencing reads of the following 20 samples
   
   ```
   HC_21_002
@@ -119,37 +155,15 @@ See presentation slides by Henrique Leitao
   HC_22_225
   ```
   
-  The sequencing reads for these samples are in the folder
-  
-  `/scratch/antwerpen/grp/aomicscourse/genomics_activity/alignment_variant_calling/reads`
-  
-  Assign the samples to different group members, so that each of you gets a fair share. For example, if there are 4 students, each should run the alignments for five (different) samples.
-  
-  Create symbolic links to the read files of your samples in your own folder.
-  
-   <details>
-    <summary>1. Show me how to do this.</summary>
-    
-    
-    cd /scratch/antwerpen/grp/aomicscourse/<firstname_lastname>
-    #do this for each of your samples
-    ln -s ../genomics_activity/alignment_variant_calling/reads/<my_sample.1.fq> <my_sample.1.fq>
-    ln -s ../genomics_activity/alignment_variant_calling/reads/<my_sample.2.fq> <my_sample.2.fq>
-    
-  </details>
-  
-  You will realise that it is tedious to run this on all files if you work with many samples. Can you write a shell script that uses a for loop to atomate the for all your samples.
-     
-  Create symbolic links to the reference genome folder `/scratch/antwerpen/grp/aomicscourse/genomics_activity/alignment_variant_calling/reference` in your own folder.
-  
- <details>
-  <summary>2. Show me how to do this.</summary>
+[//]: # (  The sequencing reads for these samples are in the folder)
 
+[//]: # (  )
+[//]: # (  `/scratch/antwerpen/grp/aomicscourse/genomics_activity/alignment_variant_calling/reads`)
+  
+  Assign the samples to different group members, so that each of you gets a fair share. 
+  For example, if there are 4 students, each should run the alignments for five (different) samples. Note, this only works
+if you have a way to exchange data among each other easily.
 
-    cd /scratch/antwerpen/grp/aomicscourse/<firstname_lastname>
-    ln -s ../genomics_activity/alignment_variant_calling/reference reference
-
- </details>
      
  ### Inspecting the input data
 
@@ -159,7 +173,8 @@ See presentation slides by Henrique Leitao
 
  <details>
   <summary>3. Show me how to do this.</summary>
-
+    #Move to the read folder
+    cd ~/alignment_variant_calling/reads
     #Count number of lines
     wc -l *.fq
          1007884 HC_21_002.1.fq
@@ -251,14 +266,7 @@ Once this is finished, copy the resulting read_QC/*.html files to your local com
 <details>
   <summary>5. Show me how to do this.</summary>
 
-  - On Windows:
-    Drag and drop files using MobaXterm
-  - On Mac/Linux:
-    Copy files with
-      ```
-      scp -i ~/.ssh/<private_key_file> <vsc_username>@login1-leibniz.hpc.uantwerpen.be:/scratch/antwerpen/grp/aomicscourse/<firstname_lastname>/read_QC/*.html .
-      ```
-  
+    cp read_QC/*.html /mnt/c/Users/Hannes/Desktop/
 
 </details>
    
@@ -304,7 +312,7 @@ Use `nano` or `vim` to create a file called 'align_reads.sh'. Add the following 
 ```  
 #!/usr/bin/env bash
 
-read_dir='/user/antwerpen/205/vsc20518/omicscourse/genomics_activity/alignment_variant_calling/reads'
+read_dir="~/alignment_variant_calling/reads"
 samples=("HC_21_002" "HC_21_007" "HC_21_010" "HC_21_019" "HC_21_024" "HC_21_032" "HC_21_088" "HC_21_093" "HC_21_095" "HC_21_103" "HC_22_025" "HC_22_040" "HC_22_049" "HC_22_054" "HC_22_126" "HC_22_130" "HC_22_132" "HC_22_134" "HC_22_141" "HC_22_225")  
   
 for id in ${samples[@]};
