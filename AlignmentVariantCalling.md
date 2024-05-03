@@ -282,10 +282,12 @@ Use bwa to align each of your samples against the reference genome. You can use 
 <details>
   <summary>6. Show me how to do this.</summary>
 
-    bwa mem -t 4 reference/HC_reference.fa <sample_id>.1.fq <sample_id>.2.fq > <sample_id>.sam
+    bwa mem -t 4 -R "@RG\\tID:<sample_id>\\tSM:<sample_id>\\tPL:ILLUMINA"  reference/HC_reference.fa <sample_id>.1.fq <sample_id>.2.fq > <sample_id>.sam
     
-  
+Note: The -R "@RG:" adds some meta-information to the alignent file. Most importantly, the identifier of the sample the reads come from.  
 </details>
+
+
 
 Inspect the resulting samfiles using `less` or `head`. Are the reads sorted?  
   
@@ -294,6 +296,8 @@ Sort fix mate information and sort reads using samtools and index the sorted ali
   samtools fixmate -m -u <sample_id>.sam - | samtools sort > <sample_id>.sorted.bam
   samtools index <sample_id>.sorted.bam
   ```
+
+
 Check that the resulting binary alignment (bam) file is sorted. Note: You cannot inspect binary files directly with `less` or `head`. You need to use `samtools view`, e.g.,
   ```
   samtools view -h <sample_id>.sorted.bam | less -S
