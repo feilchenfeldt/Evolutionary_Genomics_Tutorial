@@ -277,14 +277,14 @@ For read alignment we will use the `mem` algorithm of the program [`bwa`](https:
 
 Check to options of `bwa mem` by typing `bwa mem` into the shell.
   
-Use bwa to align each of your samples against the reference genome. You can use 4 threads per sample to speed up the alignment.
+Use bwa to align each of your samples against the reference genome. You can use 4 threads per sample to speed up the alignment. Note: Use the option `-R "@RG:..."` to add a "readgroup", i.e., some meta-information to the alignent file. Most importantly, the identifier of the sample the reads come from with the taq `SM:<sample_id>`. 
    
 <details>
   <summary>6. Show me how to do this.</summary>
 
     bwa mem -t 4 -R "@RG\\tID:<sample_id>\\tSM:<sample_id>\\tPL:ILLUMINA"  reference/HC_reference.fa <sample_id>.1.fq <sample_id>.2.fq > <sample_id>.sam
     
-Note: The -R "@RG:" adds some meta-information to the alignent file. Most importantly, the identifier of the sample the reads come from.  
+Some more information on readgroups can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
 </details>
 
 
