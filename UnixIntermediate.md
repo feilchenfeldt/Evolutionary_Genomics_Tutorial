@@ -340,12 +340,11 @@ For example, if you run
 
     bash my_script.sh hello world
 
-the stringa `great` and `output` would be available in the script as varibles `${1}` and `${2}`, respectively.
+the strings `great` and `output` would be available in the script as varibles `${1}` and `${2}`, respectively.
 
 **Q** Modify the script by replacing ':has been cool!' by `${1}` and my_output by `${2}`. Save the changes and exit the script. Then run the script with arguments, e.g., `bash my_script.sh great output2.txt`
 
-<details> 
-
+<details>
     <summary>Show me how to do this!</summary>
 
 Use nano to edit and save the script as follows:
