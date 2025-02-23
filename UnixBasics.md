@@ -58,7 +58,8 @@ In computing, a _shell_ is a user interface that allows you to interact with the
 also refer to a graphical user interface (GUI), it is most commonly used to describe text-based (command-line) interfaces.
 
 You can think of shell commands as a language to interact with your computer using text commands. Behind the scenes, a 
-process/program called a _shell_ is running and interprets these commands and sends them to the operating system to execute.
+process/program called a _shell_ is running and interprets these commands and translates them into
+machine code for the operating system to execute.
 
 So you need to write your commands in the _language_ that the _shell_ you use understands.
 The most common shell is called `bash`. It is the default on most Linux distributions 
