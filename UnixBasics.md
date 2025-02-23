@@ -52,20 +52,32 @@ Some introductory slides can be found here: [UnixBasics.pdf](Resources/2024-01_U
 
   </details>
 
+### What is a shell? 🐚
+
+In computing, a _shell_ is a user interface that allows you to interact with the operating system. Although the term can
+also refer to a graphical user interface (GUI), it is most commonly used to describe text-based (command-line) interfaces.
+
+You can think of shell commands as a language to interact with your computer using text commands. Behind the scenes, a 
+process/program called a _shell_ is running and interprets these commands and sends them to the operating system to execute.
+
+So you need to write your commands in the _language_ that the _shell_ you use understands.
+The most common shell is called `bash`. It is the default on most Linux distributions 
+(_attention_: Not on recent MacOS versions!). We will use `bash` in this tutorial.
+
 
 
 ### Why would we use the Terminal / shell in the first place?
 
-*Scripting:* We can write down a sequence of commands to perform particular tasks or analyses;
+**Scripting:** We can write down a sequence of commands to perform particular tasks or analyses;
 when working with genomic data, a task usually takes minutes, sometimes hours or even days – it’s no fun to sit and wait in front of your computer this long just for a mouse-click to initiate the next task.
 
-*Powerful Tools:* In UNIX, powerful tools are available that enable you to work through large amounts of files, data, and tasks quite quickly and in an automated (that is, programmatic) way.
+**Powerful Tools:** In UNIX, powerful tools are available that enable you to work through large amounts of files, data, and tasks quite quickly and in an automated (that is, programmatic) way.
 
-*Easy remote access:* In most cases, it is not possible anymore to deal with genomic data on a desktop computer. You will usually run analyses on clusters at high performance computing facilities at your university, or – like in this course – on the Amazon cluster.
+**Easy remote access:** In most cases, it is not possible anymore to deal with genomic data on a desktop computer. You will usually run analyses on clusters at high performance computing facilities at your university, or – like in this course – on the Amazon cluster.
 
-*GUI (Graphical User Interface) is not available* for many bioinformatics programs: Genomics is a fast evolving field and developing a GUI takes time and effort.
+**GUI (Graphical User Interface) is not available** for many bioinformatics programs: Genomics is a fast evolving field and developing a GUI takes time and effort.
 
-*Compatibility:* The terminal can (remotely) be accessed with computers running on different operating systems
+**Compatibility:** The terminal can (remotely) be accessed with computers running on different operating systems
 
 ### Basic syntax of shell commands
 
