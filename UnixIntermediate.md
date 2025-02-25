@@ -347,6 +347,7 @@ the strings `great` and `output` would be available in the script as varibles `$
 <details>
     <summary>Show me how to do this!</summary>
 
+
 Use nano to edit and save the script as follows:
 
     #!/bin/sh
@@ -364,6 +365,7 @@ Now the new output file 'output2.txt' should have the word 'great' instead of th
 
 <details>
     <summary>Show me how to do this!</summary>
+
 
     cat my_output.txt
     cat output2.txt

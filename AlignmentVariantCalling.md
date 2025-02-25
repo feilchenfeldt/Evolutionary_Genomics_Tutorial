@@ -118,7 +118,7 @@ Where can you find your Windows files within the WSL?
   </details>
 
   
-## Read aligment 
+## Read alignment 
   
   ### Preparation
   
@@ -173,6 +173,7 @@ if you have a way to exchange data among each other easily.
 
  <details>
   <summary>3. Show me how to do this.</summary>
+
     #Move to the read folder
     cd ~/alignment_variant_calling/reads
     #Count number of lines
