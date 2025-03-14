@@ -1,0 +1,309 @@
+---
+title: "Basic R"
+author: "Curro Campuzano"
+format: 
+  revealjs:
+    fig-width: 8
+    fig-height: 6
+    fig-dpi: 300
+    embed-resources: true
+---
+
+## An opinionated introduction to R
+
+by the [Svardal lab](svardallab@gmail.com), based on material by [Alexandros Bantounas](Alexandros.Bantounas@uantwerpen.be) and contributions by [Curro Campuzano](curro.campuzanojimenez@uantwerpen.be) [^1].
+
+[^1]: It is not a general programming language (so don't torture yourself by writing a command-line-application or an API.)
+
+## What is R?
+
+***R*** is a programming language for statistical computing and data visualization.[^2]
+
+[^2]: The R core has almost no breaking changes with its predecessor `S`, which was created in the 70s.
+
+It has a *very* rich ecosystem of packages (i.e. collections of pre-written code) to perform statistical and genomic analysis.
+
+## Work with R
+
+-   You can enter interactive mode by executing `R` in the command line.
+-   You can run a script executing `Rscript script.R > output.txt` in the command line.
+-   You can use an IDE to write and execute code, for example [Rstudio](https://posit.co/download/rstudio-desktop/)
+
+## Troubleshooting R
+
+If you can't install R:
+
+-   You can play with a limited version of RStudio that runs in your browser[^3] at <https://webr.r-wasm.org/latest/>
+
+-   Or execute code directly in the cluster.
+
+[^3]: Not in the cloud, in your browser via web assembly.
+
+Has anyone had any problems?
+
+## Typical R workflow
+
+1.  Define/create a folder to be used as the working directory.
+
+2.  Open R Studio and create a new Script file (menu). You can also create a project (button top right).
+
+3.  Set the working directory to your prepared folder.
+
+4.  Write your script in the script window and save it. Send selected code line(s) to the console using ctrl+Return (PC).
+
+5.  Conduct analyses, save the script, outputs, and graphs. When the entire analysis is ready, you can compile code and output into a notebook.
+
+## Basic syntax: Operators
+
+```{r, echo=TRUE}
+# You can comment your code starting a line with `#`
+# 1 + 1
+# You have basic operators such as
+1 + 1 / 2
+1 != 1
+(1 + 1) > 3
+# You can assign to variables using `<-`, `->`, or `=`
+a <- 1234
+1 + 1 -> b
+c <- "abcd" # Strings can be created using quotes
+d <- TRUE
+```
+
+## Key objects: atomic vectors and lists
+
+In `R`, *almost everything* is an **atomic vector**, a **list**, or a function.
+
+```{r, echo=TRUE}
+# All of the elements in an atomic vector are only of one type
+c(1, 2, 3) # Numeric vector
+c(T, F, T) # Logical vector
+c("A", "C", "T", "G") # Character vector
+# Lists can have different types of items in different components
+mylist <- list(1, 2, "A")
+```
+
+## Key objects: using functions
+
+Functions in R are reusable blocks of code that take inputs (arguments), perform a specific task, and return an output.
+
+```{r, echo=TRUE}
+vals <- c(1, 2, 5, 1, 2)
+c(vals, 13)
+max(vals) # Max
+which.min(vals) # Argmin
+# Random values from a Uniform(a, b)
+vals <- runif(n = 100, min = 0, max = 10)
+summary(vals)
+```
+
+## Key objects: writing functions
+
+Making your own functions allows you to automate common tasks in a more powerful way than copy-pasting.
+
+```{r, echo=TRUE}
+z_score <- function(x) {
+    (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+```
+
+## Loops in R
+
+Loops allow us to iteratively apply a function on a list of inputs. The main loop used in this tutorial is the **for** loop [^4]:
+
+[^4]: A more *idiomatic* apprach in `R` would be to use `apply`, `map` or `walk` functions. 
+
+```{r, echo=TRUE}
+for (j in 1:5) {
+    print(j^2)
+}
+```
+
+## Packages
+
+R packages are sets of custom functions and object classes that can be installed and used. Most R packages are deposited in the CRAN repository[^5].
+
+[^5]: `Pak` is (yet) another approach to package installation that installs R packages from CRAN, Bioconductor, GitHub, URLs, git repositories, local files and directories. You can use the syntax `pak::pak(c("tidyverse", "ggtree"))`.
+
+```{r, echo=TRUE, eval=FALSE}
+# Install packages from CRAN
+install.packages("tidyverse")
+# Install packages from Bioconductor
+if (!require("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install(ggtree)
+```
+
+## The tidyverse
+
+The `R` language has evolved quite a lot since it was created. [^6] A "modern" style of writing `R` code is promoted by the `tidyverse` package.
+
+[^6]: The R core has almost no breaking changes with its predecessor `S`, which was created in the 70s.
+
+```{r, echo=TRUE}
+library(tidyverse)
+```
+
+The syntax `library(package_name)` *attaches* names to your active session and lets you refer to them.
+
+## Loading data
+
+Often, you want to load data generated *outside* your R session (by others or a genomics pipeline)[^7]. Tables are encoded as data frames, which are *lists of equal-length vectors*.
+
+[^7]: In Tidyverse, data frames are of type `tibble`. They have very similar behavior but (1) allow lazy operations (without you noticing it) and (2) complain more (which is a good thing!).
+
+```{r, echo=TRUE}
+# Raw data URLs (but it could be local paths also)
+uri_adelie <- "https://portal.edirepository.org/nis/dataviewer?packageid=knb-lter-pal.219.3&entityid=002f3893385f710df69eeebe893144ff"
+df <- read_csv(uri_adelie)
+```
+
+## Inspecting the data
+
+```{r, echo=TRUE}
+dim(df) # This shows the dimension of the dataframe
+colnames(df) # The names of the columns
+glimpse(df) # Quick overview
+```
+
+## Selecting and subsetting
+
+```{r, echo = TRUE}
+x <- df[1, ] # Accessing the first row.
+x <- df[, 1] # Accessing the first column.
+df[, "studyName"] # Accessing the column by name
+df[1, "Species"] # Accessing the first row of the column "Species"
+```
+## Advanced dataset manipulation
+
+For more advanced data manipulations, you can use functions from the `dplyr` package and **chain** operations by passing the output of one function as input to the next one using the `%>%` pipe operator. 
+
+```{r, echo = TRUE}
+c(1, 2, NA, 5) %>%
+    sum() %>%
+    as.character()
+c(1, 2, NA, 5) %>%
+    sum(na.rm = T) %>%
+    as.character()
+```
+
+## Example of `dplyr` manipulation
+
+Could you guess what is happening exactly?
+
+```{r, echo = TRUE}
+df %>%
+    mutate(Sex = tolower(Sex)) %>%
+    filter(Sex == "female") %>%
+    filter(Island %in% c("Torgersen", "Biscoe", "Dream")) %>%
+    filter(!is.na(Stage)) %>%
+    select("Island", starts_with("Culmen")) %>%
+    slice_sample(n = 5)
+```
+
+## Example of `dplyr` manipulation
+
+```{r, echo = TRUE}
+df2 <- df %>%
+    # mutate() is used to create columns
+    mutate(Sex = tolower(Sex)) %>%
+    # filter() by column Value
+    filter(Sex == "female") %>%
+    # filter() by list of values
+    filter(Island %in% c("Torgersen", "Biscoe", "Dream")) %>%
+    # filter() by missing values
+    filter(!is.na(Stage)) %>%
+    # select() certain columns by index, name or pattern
+    select("Island", starts_with("Culmen")) %>%
+    # Take a random sample of rows
+    slice_sample(n = 5)
+```
+
+## Plotting using base R
+
+In base R, there are many convenient plots that just "work" when you attempt to plot different objects. However, for `final` plots, it is not always the most convenient.
+
+## Plot in base R example (1/2)
+
+```{r, echo=TRUE}
+cols <- c("Culmen Length (mm)", "Flipper Length (mm)", "Body Mass (g)")
+plot(df[, cols])
+```
+
+## Plot in base R example (2/2)
+
+```{r, echo=TRUE}
+hist(df[["Culmen Length (mm)"]],
+    main = "Distribution of Culmen Length",
+    xlab = "Culmen Length (mm)",
+    col = "skyblue",
+    border = "black",
+)
+```
+
+
+## Plotting using `ggplot` 
+
+
+```{r, echo=TRUE, eval=FALSE}
+# Set a theme
+theme_set(ggthemes::theme_tufte())
+df %>%
+    # Discard individuals with unknown sex
+    filter(!is.na(Sex)) %>%
+    # Create a plot with Body mass in the x-axis and fill by Sex
+    ggplot(aes(x = `Body Mass (g)`, fill = Sex)) +
+    # Plot an histogram
+    geom_histogram(color = "black", alpha = 0.8) +
+    xlab("Count") + # X-axis label
+    ggtitle("Histogram example") # Add title
+```
+
+
+## Plotting using `ggplot` 
+
+```{r}
+# Set a theme
+theme_set(ggthemes::theme_tufte())
+df %>%
+    # Discard individuals with unknown sex
+    filter(!is.na(Sex)) %>%
+    # Create a plot with Body mass in the x-axis and fill by Sex
+    ggplot(aes(x = `Body Mass (g)`, fill = Sex)) +
+    # Plot an histogram
+    geom_histogram(alpha = 0.8, color = "black") +
+    xlab("Count") + # X-axis label
+    ggtitle("Histogram example") # Add title
+```
+
+## Plotting using `ggplot`
+
+```{r, echo=TRUE, eval=FALSE}
+df %>%
+    filter(!is.na(Sex)) %>%
+    ggplot(aes(x = `Flipper Length (mm)`, y = `Body Mass (g)`, colour = Sex)) +
+    geom_smooth(method = lm, linetype = "dashed") +
+    geom_point(shape = 1) +
+    facet_wrap(~Island) +
+    ggtitle(
+        label = "Flipper Length versus Body Mass",
+        subtitle = "We don't see differences between islands but between sexes in Adelie Penguin"
+    )
+```
+
+## Plotting using `ggplot`
+
+```{r}
+df %>%
+    filter(!is.na(Sex)) %>%
+    ggplot(aes(x = `Flipper Length (mm)`, y = `Body Mass (g)`, colour = Sex)) +
+    geom_smooth(method = lm, linetype = "dashed") +
+    geom_point(shape = 1) +
+    facet_wrap(~Island) +
+    ggtitle(
+        label = "Flipper Length versus Body Mass",
+        subtitle = "We don't see differences between islands but between sexes in Adelie Penguin"
+    )
+```
+
+
