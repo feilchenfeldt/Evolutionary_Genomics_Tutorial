@@ -13,13 +13,13 @@ format:
 
 by the [Svardal lab](svardallab@gmail.com), based on material by [Alexandros Bantounas](Alexandros.Bantounas@uantwerpen.be) and contributions by [Curro Campuzano](curro.campuzanojimenez@uantwerpen.be) [^1].
 
-[^1]: It is not a general programming language (so don't torture yourself by writing a command-line-application or an API.)
+[^1]: I have added some footnotes for those who have more experience. Feel free to ignore them!
 
 ## What is R?
 
 ***R*** is a programming language for statistical computing and data visualization.[^2]
 
-[^2]: The R core has almost no breaking changes with its predecessor `S`, which was created in the 70s.
+[^2]: It is not a general programming language (so don't torture yourself by writing a command-line-application or an API.)
 
 It has a *very* rich ecosystem of packages (i.e. collections of pre-written code) to perform statistical and genomic analysis.
 
@@ -93,6 +93,7 @@ max(vals) # Max
 which.min(vals) # Argmin
 # Random values from a Uniform(a, b)
 vals <- runif(n = 100, min = 0, max = 10)
+# A stats summary of a vector
 summary(vals)
 ```
 
@@ -110,7 +111,7 @@ z_score <- function(x) {
 
 Loops allow us to iteratively apply a function on a list of inputs. The main loop used in this tutorial is the **for** loop [^4]:
 
-[^4]: A more *idiomatic* apprach in `R` would be to use `apply`, `map` or `walk` functions. 
+[^4]: A more *idiomatic* approach in `R` would be to use `apply`, `map` or `walk` functions. 
 
 ```{r, echo=TRUE}
 for (j in 1:5) {
@@ -172,7 +173,7 @@ glimpse(df) # Quick overview
 x <- df[1, ] # Accessing the first row.
 x <- df[, 1] # Accessing the first column.
 df[, "studyName"] # Accessing the column by name
-df[1, "Species"] # Accessing the first row of the column "Species"
+df$Species[1] # Accesing using the `$` operator
 ```
 ## Advanced dataset manipulation
 
@@ -205,17 +206,25 @@ df %>%
 
 ```{r, echo = TRUE}
 df2 <- df %>%
-    # mutate() is used to create columns
+    # mutate() creates/modifies columns - here converting Sex to lowercase
+    # ensures consistent formatting (e.g., "FEMALE", "Female" -> "female")
     mutate(Sex = tolower(Sex)) %>%
-    # filter() by column Value
+    # filter() keeps rows matching conditions - selecting only female penguins
+    # this removes all male penguins from the dataset
     filter(Sex == "female") %>%
-    # filter() by list of values
+    # %in% operator checks if values match any element in a vector
+    # keeping only penguins from Torgersen, Biscoe, or Dream islands
     filter(Island %in% c("Torgersen", "Biscoe", "Dream")) %>%
-    # filter() by missing values
+    # !is.na() keeps only non-missing values in the Stage column
+    # this removes incomplete records without Stage information
     filter(!is.na(Stage)) %>%
-    # select() certain columns by index, name or pattern
+    # select() specifies which columns to keep in the output
+    # starts_with() is a helper that matches column names by prefix
+    # this keeps Island and all columns starting with "Culmen" (e.g., Culmen_Length_mm)
     select("Island", starts_with("Culmen")) %>%
-    # Take a random sample of rows
+    # slice_sample() randomly selects rows from the dataset
+    # n=5 specifies exactly 5 rows to be randomly selected
+    # useful for creating examples or smaller representative samples
     slice_sample(n = 5)
 ```
 
@@ -242,12 +251,10 @@ hist(df[["Culmen Length (mm)"]],
 ```
 
 
-## Plotting using `ggplot` 
+## Plotting using `ggplot` : A basic plot
 
 
 ```{r, echo=TRUE, eval=FALSE}
-# Set a theme
-theme_set(ggthemes::theme_tufte())
 df %>%
     # Discard individuals with unknown sex
     filter(!is.na(Sex)) %>%
@@ -260,12 +267,10 @@ df %>%
 ```
 
 
-## Plotting using `ggplot` 
+## Plotting using `ggplot`: A basic plot
 
 ```{r}
-# Set a theme
-theme_set(ggthemes::theme_tufte())
-df %>%
+p1 <- df %>%
     # Discard individuals with unknown sex
     filter(!is.na(Sex)) %>%
     # Create a plot with Body mass in the x-axis and fill by Sex
@@ -274,16 +279,26 @@ df %>%
     geom_histogram(alpha = 0.8, color = "black") +
     xlab("Count") + # X-axis label
     ggtitle("Histogram example") # Add title
+p1
 ```
 
-## Plotting using `ggplot`
+## `ggplot` basics [^8]
+
+1. Data to create the plot
+2. Mappings of data to the graph (aesthetic mapping)
+3. What type of graph we want to use (`geom_` family of functions).
+4. Final adjustments (`scale_` and `theme_` family of functions among others).
+
+[^8]: As mentioned before, (almost) everything in R is a list. Try executing `glimpse(p1)`.
+
+## Plotting using `ggplot`: More than one geom
 
 ```{r, echo=TRUE, eval=FALSE}
 df %>%
     filter(!is.na(Sex)) %>%
     ggplot(aes(x = `Flipper Length (mm)`, y = `Body Mass (g)`, colour = Sex)) +
     geom_smooth(method = lm, linetype = "dashed") +
-    geom_point(shape = 1) +
+    geom_point(shape = 1) + # shape = 1 is data independent!
     facet_wrap(~Island) +
     ggtitle(
         label = "Flipper Length versus Body Mass",
@@ -291,14 +306,14 @@ df %>%
     )
 ```
 
-## Plotting using `ggplot`
+## Plotting using `ggplot`: More than one geom
 
 ```{r}
 df %>%
     filter(!is.na(Sex)) %>%
     ggplot(aes(x = `Flipper Length (mm)`, y = `Body Mass (g)`, colour = Sex)) +
     geom_smooth(method = lm, linetype = "dashed") +
-    geom_point(shape = 1) +
+    geom_point(shape = 1) + # shape = 1 is data independent!
     facet_wrap(~Island) +
     ggtitle(
         label = "Flipper Length versus Body Mass",
@@ -307,3 +322,17 @@ df %>%
 ```
 
 
+## Resources
+
+- If you have an idea of what you want, but don't know how to start you can visit the [The R Graph Gallery
+](https://r-graph-gallery.com/).
+
+- If you want to read more on data visualization with `R` I recommend [Modern Data Visualization with R
+](https://rkabacoff.github.io/datavis/)
+
+- If you want to read more on data science with `R` I recommend [R for Data Science (2e)
+](https://r4ds.hadley.nz/)
+
+- If you want to read advance topics[^9], I suggest to pick some of the chapters from [Advanced R](https://adv-r.hadley.nz/index.html).
+
+[^9]: For example, re-writing only a few slow functions in C++ is actually *very simple* with ChatGPT and the `Rcpp` package (or, at least, way simpler than th equivalent work in Python).
