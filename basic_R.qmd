@@ -97,6 +97,15 @@ vals <- runif(n = 100, min = 0, max = 10)
 summary(vals)
 ```
 
+## Documentation
+
+You can read the documentation of any function by typing `?` in front of the function. 
+
+```{r, echo =TRUE}
+?max
+```
+
+
 ## Key objects: writing functions
 
 Making your own functions allows you to automate common tasks in a more powerful way than copy-pasting.
