@@ -1,20 +1,8 @@
----
-title: "Plotting Population Genomic results in `R`"
-author: "Curro Campuzano"
-engine: knitr
-format:
-  revealjs:
-    fig-width: 8
-    fig-height: 6
-    fig-dpi: 300
-    embed-resources: true
----
-
 ## Plotting Population Genomic results in R
 
 by the [Svardal lab](svardallab@gmail.com), based on material by [Alexandros Bantounas](Alexandros.Bantounas@uantwerpen.be) and contributions by [Curro Campuzano](curro.campuzanojimenez@uantwerpen.be) [^1].
 
-[^1]: You can take a look at their _extensive_ [documentation](https://jokergoo.github.io/ComplexHeatmap-reference/).
+[^1]: I have added some footnotes for those who have more experience. Feel free to ignore them!
 
 ## Overview of the data
 
@@ -334,3 +322,18 @@ data_admix %>%
 ```
 
 ## Plotting the Fst results
+
+```{r}
+fst_file <- "chr15.windowed.weir.windowed.weir.fst"
+data_fst <- read_tsv(fst_file)
+data_fst %>%
+    # First, we compute the middle of the windows
+    mutate(middle = (BIN_START + BIN_END) / 2) %>%
+    # Then, we plot the Fst values
+    ggplot(aes(x = middle, y = MEAN_FST)) +
+    geom_point(alpha = 0.5) +
+    xlab("Window position") +
+    ylab("Fst")+
+    ylim(0, 1)+
+    theme_minimal()
+```
