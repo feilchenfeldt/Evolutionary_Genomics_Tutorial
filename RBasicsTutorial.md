@@ -1,14 +1,3 @@
----
-title: "Basic R"
-author: "Curro Campuzano"
-format: 
-  revealjs:
-    fig-width: 8
-    fig-height: 6
-    fig-dpi: 300
-    embed-resources: true
----
-
 ## An opinionated introduction to R
 
 by the [Svardal lab](svardallab@gmail.com), based on material by [Alexandros Bantounas](Alexandros.Bantounas@uantwerpen.be) and contributions by [Curro Campuzano](curro.campuzanojimenez@uantwerpen.be) [^1].
@@ -17,25 +6,25 @@ by the [Svardal lab](svardallab@gmail.com), based on material by [Alexandros Ban
 
 ## What is R?
 
-***R*** is a programming language for statistical computing and data visualization.[^2]
+**_R_** is a programming language for statistical computing and data visualization.[^2]
 
 [^2]: It is not a general programming language (so don't torture yourself by writing a command-line-application or an API.)
 
-It has a *very* rich ecosystem of packages (i.e. collections of pre-written code) to perform statistical and genomic analysis.
+It has a _very_ rich ecosystem of packages (i.e. collections of pre-written code) to perform statistical and genomic analysis.
 
 ## Work with R
 
--   You can enter interactive mode by executing `R` in the command line.
--   You can run a script executing `Rscript script.R > output.txt` in the command line.
--   You can use an IDE to write and execute code, for example [Rstudio](https://posit.co/download/rstudio-desktop/)
+- You can enter interactive mode by executing `R` in the command line.
+- You can run a script executing `Rscript script.R > output.txt` in the command line.
+- You can use an IDE to write and execute code, for example [Rstudio](https://posit.co/download/rstudio-desktop/)
 
 ## Troubleshooting R
 
 If you can't install R:
 
--   You can play with a limited version of RStudio that runs in your browser[^3] at <https://webr.r-wasm.org/latest/>
+- You can play with a limited version of RStudio that runs in your browser[^3] at <https://webr.r-wasm.org/latest/>
 
--   Or execute code directly in the cluster.
+- Or execute code directly in the cluster.
 
 [^3]: Not in the cloud, in your browser via web assembly.
 
@@ -51,7 +40,13 @@ Has anyone had any problems?
 
 4.  Write your script in the script window and save it. Send selected code line(s) to the console using ctrl+Return (PC).
 
-5.  Conduct analyses, save the script, outputs, and graphs. When the entire analysis is ready, you can compile code and output into a notebook.
+5.  Conduct analyses, save the script, outputs, and graphs. When the entire analysis is ready, you can execute the code and output into a notebook.
+
+## RStudio IDE
+
+Unlike Jupyter notebooks, Quarto notebooks (formerly known as RMarkdown files) are plain text documents. You can easily convert them to various formats and work with them directly in RStudio. For more details on using Quarto in RStudio, check out the official guide:
+
+https://quarto.org/docs/get-started/hello/rstudio.html
 
 ## Basic syntax: Operators
 
@@ -71,7 +66,7 @@ d <- TRUE
 
 ## Key objects: atomic vectors and lists
 
-In `R`, *almost everything* is an **atomic vector**, a **list**, or a function.
+In `R`, _almost everything_ is an **atomic vector**, a **list**, or a function.
 
 ```{r, echo=TRUE}
 # All of the elements in an atomic vector are only of one type
@@ -99,12 +94,11 @@ summary(vals)
 
 ## Documentation
 
-You can read the documentation of any function by typing `?` in front of the function. 
+You can read the documentation of any function by typing `?` in front of the function.
 
 ```{r, echo =TRUE}
 ?max
 ```
-
 
 ## Key objects: writing functions
 
@@ -120,7 +114,7 @@ z_score <- function(x) {
 
 Loops allow us to iteratively apply a function on a list of inputs. The main loop used in this tutorial is the **for** loop [^4]:
 
-[^4]: A more *idiomatic* approach in `R` would be to use `apply`, `map` or `walk` functions. 
+[^4]: A more _idiomatic_ approach in `R` would be to use `apply`, `map` or `walk` functions.
 
 ```{r, echo=TRUE}
 for (j in 1:5) {
@@ -154,11 +148,11 @@ The `R` language has evolved quite a lot since it was created. [^6] A "modern" s
 library(tidyverse)
 ```
 
-The syntax `library(package_name)` *attaches* names to your active session and lets you refer to them.
+The syntax `library(package_name)` _attaches_ names to your active session and lets you refer to them.
 
 ## Loading data
 
-Often, you want to load data generated *outside* your R session (by others or a genomics pipeline)[^7]. Tables are encoded as data frames, which are *lists of equal-length vectors*.
+Often, you want to load data generated _outside_ your R session (by others or a genomics pipeline)[^7]. Tables are encoded as data frames, which are _lists of equal-length vectors_.
 
 [^7]: In Tidyverse, data frames are of type `tibble`. They have very similar behavior but (1) allow lazy operations (without you noticing it) and (2) complain more (which is a good thing!).
 
@@ -184,9 +178,10 @@ x <- df[, 1] # Accessing the first column.
 df[, "studyName"] # Accessing the column by name
 df$Species[1] # Accesing using the `$` operator
 ```
+
 ## Advanced dataset manipulation
 
-For more advanced data manipulations, you can use functions from the `dplyr` package and **chain** operations by passing the output of one function as input to the next one using the `%>%` pipe operator. 
+For more advanced data manipulations, you can use functions from the `dplyr` package and **chain** operations by passing the output of one function as input to the next one using the `%>%` pipe operator.
 
 ```{r, echo = TRUE}
 c(1, 2, NA, 5) %>%
@@ -259,9 +254,7 @@ hist(df[["Culmen Length (mm)"]],
 )
 ```
 
-
 ## Plotting using `ggplot` : A basic plot
-
 
 ```{r, echo=TRUE, eval=FALSE}
 df %>%
@@ -274,7 +267,6 @@ df %>%
     xlab("Count") + # X-axis label
     ggtitle("Histogram example") # Add title
 ```
-
 
 ## Plotting using `ggplot`: A basic plot
 
@@ -330,18 +322,17 @@ df %>%
     )
 ```
 
-
 ## Resources
 
 - If you have an idea of what you want, but don't know how to start you can visit the [The R Graph Gallery
-](https://r-graph-gallery.com/).
+  ](https://r-graph-gallery.com/).
 
 - If you want to read more on data visualization with `R` I recommend [Modern Data Visualization with R
-](https://rkabacoff.github.io/datavis/)
+  ](https://rkabacoff.github.io/datavis/)
 
 - If you want to read more on data science with `R` I recommend [R for Data Science (2e)
-](https://r4ds.hadley.nz/)
+  ](https://r4ds.hadley.nz/)
 
 - If you want to read advance topics[^9], I suggest to pick some of the chapters from [Advanced R](https://adv-r.hadley.nz/index.html).
 
-[^9]: For example, re-writing only a few slow functions in C++ is actually *very simple* with ChatGPT and the `Rcpp` package (or, at least, way simpler than th equivalent work in Python).
+[^9]: For example, re-writing only a few slow functions in C++ is actually _very simple_ with ChatGPT and the `Rcpp` package (or, at least, way simpler than th equivalent work in Python).
