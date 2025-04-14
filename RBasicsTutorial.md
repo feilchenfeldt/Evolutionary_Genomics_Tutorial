@@ -40,7 +40,13 @@ Has anyone had any problems?
 
 4.  Write your script in the script window and save it. Send selected code line(s) to the console using ctrl+Return (PC).
 
-5.  Conduct analyses, save the script, outputs, and graphs. When the entire analysis is ready, you can compile code and output into a notebook.
+5.  Conduct analyses, save the script, outputs, and graphs. When the entire analysis is ready, you can execute the code and output into a notebook.
+
+## RStudio IDE
+
+Unlike Jupyter notebooks, Quarto notebooks (formerly known as RMarkdown files) are plain text documents. You can easily convert them to various formats and work with them directly in RStudio. For more details on using Quarto in RStudio, check out the official guide:
+
+https://quarto.org/docs/get-started/hello/rstudio.html
 
 ## Basic syntax: Operators
 
