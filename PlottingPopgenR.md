@@ -1,702 +1,336 @@
-# Plotting Population Genomic results in `R`
-by Alexandros Bantounas Alexandros.Bantounas@uantwerpen.be
+---
+title: "Plotting Population Genomic results in `R`"
+author: "Curro Campuzano"
+engine: knitr
+format:
+  revealjs:
+    fig-width: 8
+    fig-height: 6
+    fig-dpi: 300
+    embed-resources: true
+---
 
-## R Elements
+## Plotting Population Genomic results in R
 
-Using R involves writing commands (“code”). These commands are assembled
-in a **script** that is saved and can be re-used. The R **console**
-receives the commands, either from the script or by directly typing, and
-also shows the progress and outputs of those commands. **Plots** can be
-visualized in a separate window. All these elements can be combined in
-integrated development environments (IDEs). The commonest IDE for R is
-**RStudio**. The RStudio environment should look like this:
+by the [Svardal lab](svardallab@gmail.com), based on material by [Alexandros Bantounas](Alexandros.Bantounas@uantwerpen.be) and contributions by [Curro Campuzano](curro.campuzanojimenez@uantwerpen.be) [^1].
 
-In RStudio you can also bundle all the analysis in Projects, allowing
-you to have all the data, scripts and outputs available in one place. A
-typical R workflow looks like this:
+[^1]: You can take a look at their _extensive_ [documentation](https://jokergoo.github.io/ComplexHeatmap-reference/).
 
-1.Define/create a folder to be used as the working directory.
+## Overview of the data
 
-2.Open R Studio and create a new Script file (menu). You can also create
-a project (button top right).
+In order to plot the genomics results, certain output files need to be downloaded to the local drive and in our working/project directory. Download the following files:
 
-3.Set the working directory to your prepared folder.
+- The .dist and .dist.id files for the distance matrix.
 
-4.Write your script in the script window and save it. Send selected code
-line(s) to the console using ctrl+Return (PC).
+- The metadata .csv file.
 
-5.Conduct analyses, save the script, outputs and graphs. When the entire
-analysis is ready, you can compile code and output into a notebook.
+- The .eigenvec and .eigenval files for the PCA.
 
-## R commands
+- The .fam and .Q files for the ADMIXTURE analysis.
 
-The structure of an R command is the following:
+- The windowed.weir.fst file for the Fst analysis.
 
-**command.name(argument1, argument2,…)**
+## Metadata
 
-The arguments “tell” R on which data and with what options to execute
-the command.
+First step, is to load the metadata:
 
-## R objects and assignment
-
-Inputs and outputs in R can be assigned to objects using the assignment
-arrow **\<-**. For example, let’s assign different data to a variable
-and execute the command **print()** to visualize them:
-
-``` r
-a <- 3
-print(a)
-b <- "Genomics"
-print(b)
-```
-
-Bear in mind that for text to be recognised as text in R it has to be
-between ‘single’ or “double” quotes, otherwise it is recognised as an
-object.
-
-Using the same object name to assign multiple objects results in the
-last object to be assigned in that object name.
-
-``` r
-i <- "Genomics"
-print(i)
-i <- "Hey"
-print(i)
-```
-
-There are multiple object categories, such as vectors, lists, data
-frames, matrices and more specialized object types.
-
-Multiple data can be assigned to the same object using the command
-**c()**. This creates vectors of similar data types:
-
-``` r
-#Numeric vector
-numeric.vector <- c(1,2,3,4)
-print(numeric.vector)
-#Character vector
-character.vector <- c("2023", "Omics", "Techniques")
-print(character.vector)
-#Notice that vectors can only take the same type of data
-character.vector2 <- c(2023, "Omics", "Techniques")
-print(character.vector)
-```
-
-##Packages R packages are sets of custom functions and object classes
-that can be installed and used. Most R packages are deposited in the
-CRAN repository. An important set of packages involved in data
-manipulation and plotting is the **tidyverse**.
-
-``` r
-#Installing packages directly from CRAN. This function has to be executed once.
-install.packages("tidyverse")
-#Loading a package to be used in the current script. This function has to be executed every time the script is re-opened and re-used.
+```{r}
 library(tidyverse)
+metadata <- read_csv("metadata.csv")
+metadata
 ```
 
-## Loading and exploring data
+## Distance matrix
 
-Small datasets can be created using the command **data.frame()**; larger
-datasets are loaded into R from files prepared in other programs such as
-the genomics pipeline run today. The **data.frame()** command creates an
-R object that can combine vectors with numbers, for example
-measurements, and vectors with categories.
+First, we load the names of the samples from the `dist.id` file, and the distance matrix.
 
-In order to load into R larger datasets located in a directory, the main
-command to use is **read.table()**.
-
-``` r
-#header specifies whether the entries have headers, sep the separator between values (comma in csv files)
-my.data <- read.table(file = "Mypath\\file_name", header = TRUE, sep = ",", dec = ".")
+```{r, echo=TRUE}
+dist_ids <- read_tsv("output_chr14_elisa.dist.id", col_names = c("Sample1", "Sample2"))
+dist_ids$Sample1 == dist_ids$Sample2
+distance_mat <- as.matrix(read_tsv("output_chr14_elisa.dist", col_names = F))
 ```
 
-Now let’s explore a dataset that comes with the base R, the **iris**
-dataset:
+## Link samples with the metadata
 
-``` r
-data("iris") #This loads any premade datasets from base R or any packages installed.
-head(iris, n=10) #This shows the first n rows of the dataset, 6 by default.
-str(iris) #This command shows an overview of the structure of the dataset. 
+```{r, echo = TRUE}
+# We want to extract the sample id from the filename. We can achieve this
+# by removing the file extension
+sample_ids <- str_remove(dist_ids$Sample1, ".sorted.bam")
+sample_ids
+# *Sanity check*
+# Check that the metadata is in the same order.
+# Code below will raise an error if the samples are not
+# in the correct order. If that's the case, you can uncomment
+# the following lines of code (or do something similar).
+# rownames(metadata) <- metadata$Sample_ID
+# metadata[sample_ids, ] <- sample_ids
+stopifnot(all(metadata$Sample_ID == sample_ids))
+rownames(distance_mat) <- sample_ids
+colnames(distance_mat) <- sample_ids
 ```
 
-After we have an overview of our data, it is important to know how to
-navigate or “call” specific entries in our dataset. There are two main
-ways to access entries in a dataset:
+## Heaptmap
 
-``` r
-#When referencing a named column, we can use the dollar sign $
-head(iris$Sepal.Length)
-#We can also access any row, column combination using [r,c]
-iris[1,] #Accessing first row.
-iris[,1] #Accessing first column.
-iris[1,1] #Accessing the value in the first column and first row.
+We can make a simple heatmap that shows the how samples cluster together in base `R`.
 
-#Finally, if instead of a data frame we have a list we use the [[n]][m] notation to access the mth value in the nth item of the list
-list1 <- list(1:20)
-list1[[1]][2]
+```{r, echo = TRUE}
+heatmap(distance_mat)
 ```
 
-### Subsetting data and missing values
+## Clustering
 
-There are many situations where only a specific subset of the data needs
-to be used. In R, this is done with entering a so-called logical
-statement (see below) in the square brackets. For example, if we wish to
-choose the cells with sepal length larger than 6:
+Notice that, in the previous plot, there is a dendrogram showing the a hierarchical structure. We can choose the agglomeration method to use.
 
-``` r
-iris.selected <- iris[iris$Sepal.Length > 6,]
-str(iris)
-str(iris.selected)
+```{r, echo=TRUE}
+# You can execute ?heatmap and ?hclust to read the documentation
+upgma <- function(x) hclust(x, method = "average")
+heatmap(distance_mat, hclustfun = upgma)
 ```
 
-Missing data may appear in dataset as NA (no value) or NaN (not a
-number). A useful command to quickly check whether there are NA values
-in the dataset is to use a combination of the **sum()** and **is.na()**
-commands. This finds any NA values in our dataset and sums the number of
-NA values found.
+## A more advance heatmap[^2]
 
-``` r
-sum(is.na(iris))
-example.df <- data.frame(column1 = c(18, NA, 23, 17),
-                         column2 = c(NA, "Antwerp", "Brussels","Gent"))
-sum(is.na(example.df))
-#To find the positions of NA values we use the which() function
-which(is.na(example.df)==TRUE)
+[^2]: You can take a look at their _extensive_ [documentation](https://jokergoo.github.io/ComplexHeatmap-reference/).
+
+```{r, echo=TRUE, eval=FALSE}
+# BiocManager::install("ComplexHeatmap")
+library(ComplexHeatmap)
+Heatmap(distance_mat, name = "Distance") +
+    rowAnnotation(Clade = metadata$Clade, Sex = metadata$Sex)
 ```
 
-## Loops in R
+## A more advance heatmap
 
-Loops allow us to iteratively apply a function on a list of inputs. The
-main loop used in this tutorial is the **for** loop:
-
-``` r
-for(j in 1:20){
-  print(j^2)
-  }
+```{r}
+# BiocManager::install("ComplexHeatmap")
+set.seed(101)
+library(ComplexHeatmap)
+Heatmap(
+    distance_mat,
+    name = "Distance",
+    width = unit(4.5, "inch"), # Adjust width as needed
+    height = unit(4.5, "inch"), # Adjust height as needed
+) +
+    rowAnnotation(Clade = metadata$Clade, Sex = metadata$Sex)
 ```
 
-## Advanced dataset manipulation
+## Making and plotting a neighbour-joining (NJ) tree
 
-Very useful packages in manipulating datasets are the packages
-**plyr/dplyr**. In this tutorial we will see multiple functions as well
-as the symbol **%\>%** which acts like the pipe **\|** in Unix. Some
-example functions:
+Now, we will use the genomic pairwise distance matrix to create a phylogenetic tree of our samples. We can build a neighbour-joining tree using the `ape` package and visualize it using the `plot` function.[^3]
 
-``` r
-library(dplyr)
-# Create DataFrame
-df <- data.frame(
-  id = c(10,11,12,13,14,15,16,17),
-  name = c('sai','ram','deepika','sahithi','kumar','scott','Don','Lin'),
-  gender = c('M','M','F','F','M','M','M','F'),
-  dob = as.Date(c('1990-10-02','1981-3-24','1987-6-14','1985-8-16',
-                  '1995-03-02','1991-6-21','1986-3-24','1990-8-26')),
-  state = c('CA','NY',NA,NA,'DC','DW','AZ','PH'),
-  row.names=c('r1','r2','r3','r4','r5','r6','r7','r8')
-)
-df
-#Filter function allows us to filter the dataset based on specific criteria
-  # filter() by row name
-  df %>% filter(rownames(df) == 'r3')
-  
-  # filter() by column Value
-  df %>% filter(gender == 'M')
-  
-  # filter() by list of values
-  df %>% filter(state %in% c("CA", "AZ", "PH"))
-  
-  # filter() by multiple conditions
-  df %>% filter(gender == 'M' & id > 15)
+[^3]: The `plot`function is a generic function that can be overloaded by authors of different packages.
 
-#Select allows us to select colums or variables from the data  
-  # select() single column
-  df %>% select('id')
-  
-  # select() multiple columns
-  df %>% select(c('id','name'))
-  
-  # Select multiple columns by id
-  df %>% select(c(1,2))
+## Making and plotting a neighbour-joining (NJ) tree
 
-#Mutate is used to update/replace the values of columns in dataframes
-  # Replace on selected column
-  df %>% 
-    mutate(name = str_replace(name, "sai", "SaiRam"))
-```
-
-## Plotting using base R
-
-Plotting in R utilizes a graphics device. The plots are modular and
-essentially the elements of a plot are added one on top of the other in
-the graphics device. This logic is especially important when plotting
-using ggplot2.
-
-While plotting in base R the main command used is the universal
-**plot()** command. In this tutorial we wil use a toy dataset included
-with R distributions, the **iris** dataset. So the first step is to load
-this dataset in R and see its structure:
-
-``` r
-data("iris") #Example data
-str(iris)
-```
-
-The next step is to plot two columns of the dataset one over the other.
-Let’s plot the **Sepal.Length** on the y axis and the **Sepal.width** on
-the x axis:
-
-``` r
-plot(Sepal.Length ~ Sepal.Width, data=iris)
-```
-
-We can also change this basic plot’s main title and axis labels:
-
-``` r
-plot(Sepal.Length ~ Sepal.Width, data=iris,main="Sepal length over sepal width", xlab="Sepal Width", ylab="Sepal Length")
-```
-
-We can also modify the symbol used for our points **(pch)**, their size
-**(cex)**, or colour them based on the value they have on a different
-column of the dataset **(col)**. Here we colour them based on their
-species.
-
-``` r
-plot(Sepal.Length ~ Sepal.Width, data=iris,main="Sepal length over sepal width", xlab="Sepal Width", ylab="Sepal Length", pch="*", cex=2.0, col=c("blue", "green", "red")[Species])
-```
-
-Finally, to add a legend to our plot we use the separate command
-**legend()** and choose its position, its title, the label names and the
-colours used to match our graph’s.
-
-``` r
-plot(Sepal.Length ~ Sepal.Width, data=iris,main="Sepal length over sepal width", xlab="Sepal Width", ylab="Sepal Length", pch="*", cex=2.0, col=c("blue", "green", "red")[Species])
-
-legend("topright", pch="*", col=c("blue", "green", "red"), c("I.setosa", "I.versicolor", "I.virginica"), cex=0.8, title="Species")
-```
-
-Finally, an important aspect of the graphics device is the manipulation
-of the number of plots per window and the margins of the graphics
-device. The former is done through the **par(mfrow=c(y,x))** command,
-where y is the number of plots per column and x the number of plots per
-row. The margins can be manipulated through the **par(mar=c(x,y,z,k))**
-command, where x is the bottom margin and the rest follow a clockwise
-order. Finally, the graphics device can be emptied using the
-**dev.off()** command, deleting all plots in the plotting window and
-resetting its settings.
-
-Try to plot all 4 of the plots above in the same window using the
-par(mfrow) command and then executing the 4 plot commands in sequence.
-
-## Plotting using ggplot2
-
-A very useful package for plotting in R is the **ggplot2** package that
-is included in the **tidyverse**. The main difference between using base
-R and ggplot2 is the concept of aesthetic mappings, which allow for high
-customization and make the code extremely modular. In any plotting
-pipeline with ggplot2 the first step is to specify which data are
-plotted with the main function **ggplot()** and assigning this graph
-element to a variable.
-
-``` r
-library(tidyverse) #loading tidyverse which includes ggplot2
-example.plot <-  ggplot(data=iris, mapping = aes(x = Sepal.Width, 
-                      y = Sepal.Length))
-example.plot
-```
-
-Evaluating the plot above yields an empty graph. This is because in
-ggplot2, unlike base R, we have to specify with a separate command how
-to draw the plot between our two variables. This is done through various
-commands for the various graph types, all beginning with the **geom\_**
-element. In this case, for a scatter plot of points we use
-**geom_point()**.
-
-``` r
-example.plot <-  ggplot(data=iris, mapping = aes(x = Sepal.Width, 
-                      y = Sepal.Length))
-example.plot + geom_point()
-```
-
-Multiple types of graphs can be plotted for different types of data
-(continuous\~continuous or continuous\~categorical):
-
-``` r
-example.plot2 <-  ggplot(data=iris, mapping = aes(x = Species, 
-                      y = Sepal.Length))
-example.plot2 + geom_boxplot(mapping = aes(color=Species))
-
-example.plot2 + geom_violin(mapping = aes(color=Species, fill=Species))
-```
-
-We can also specify how our points can be coloured, either in the
-aesthetics of the base plot or in the aesthetics of the geom element:
-
-``` r
-example.plot <-  ggplot(data=iris, mapping = aes(x = Sepal.Width, 
-                      y = Sepal.Length, 
-                      color = Species,
-                      fill = Species)) + geom_point()
-example.plot
-
-example.plot2 <-  ggplot(data=iris, mapping = aes(x = Sepal.Width, 
-                      y = Sepal.Length)) + geom_point(mapping=aes(color = Species,
-                      fill = Species))
-example.plot2
-```
-
-## Plotting the genomics results
-
-In order to plot the genomics results, certain output files need to be
-downloaded to the local drive and in our working/project directory.
-Download the following files:
-
-1.  The **.dist** and **.dist.id** files for the distance matrix.
-
-2.  The metadata **.csv** file.
-
-3.  The **.eigenvec** and **.eigenval** files for the PCA.
-
-4.  The **.fam** and **.Q** files for the ADMIXTURE analysis.
-
-5.  The **windowed.weir.fst** file for the Fst analysis.
-
-It is also important to install the necessary packages. In this tutorial
-we will use three packages: **tidyverse**, **ape** and **ggtree**.
-
-``` r
-install.packages(c("tidyverse", "ape","ggtree"))
-library(tidyverse)
+```{r, echo=TRUE}
+# install.packages("ape")
 library(ape)
+nj_tree <- nj(distance_mat)
+plot(nj_tree)
+```
+
+## The `ggtree` package
+
+```{r, echo=TRUE}
+# BiocManager::install("ggtree")
 library(ggtree)
+nj_tree %>%
+    ggplot() +
+    geom_tree() +
+    geom_tiplab() +
+    theme_tree()
 ```
 
-### Plotting the distance matrix
+## The `ggtree` package
 
-The first step is to load into R the distance matrix itself as a data
-frame, as well as the sample ID to be used as labels:
+You can play with the aesthetic of the plot
 
-``` r
-plink.dist <- read.table(file = "Path_to_working_directory\\chr17.dist", header = FALSE, sep = "\t", dec = ".") #Distance matrix
-
-plink.id <- as.data.frame(read.table(file = "Path_to_working_directory\\chr17.dist.id", header = FALSE, sep = "\t", dec = ".")) #Sample IDs
-
-str(plink.dist)
+```{r, echo=TRUE}
+nj_tree %>%
+    ggtree(layout = "ellipse") +
+    geom_text(aes(label = node), hjust = -.3) +
+    theme_tree(bgcolor = "lightblue")
 ```
 
-The next step is to transform the data.frame into a matrix and
-incorporate our sample IDs as the matrix dimension names.
+## Working towards a more advance phylogenetic tree
 
-``` r
-plink.matrix <- as.matrix(plink.dist)
+We want, again, to link the phylogenetic tree with the metadata. Notice the weird `%<+%` operator ...
 
-dimnames(plink.matrix) <- list(plink.id[,1],plink.id[,1])
-
-plink.matrix
+```{r, echo=TRUE, eval=FALSE}
+p <- ggtree(nj_tree)
+p %<+% metadata +
+    # Add labels to the tips from the metadata
+    geom_tippoint(aes(color = Clade), size = 3) +
+    # Manually, highlight some some interesting regions
+    geom_cladelabel(node = 37, label = "South", offset = 200) +
+    # Highlight another regions. Notice that, by selecting the node
+We are selecting all “descendants.”
+    geom_hilight(node = 22, fill = "grey", alpha = 0.5) +
+    theme_tree() +
+    theme(legend.position = "bottom") +
+    ggtitle("Annotated phylogenetic tree")
 ```
 
-The next step is to transform the data from wide format into the long
-format (which is a much more tidy way of representing data in R).
+## Working towards a more advance phylogenetic tree
 
-``` r
-plink.dist.df<-  as_tibble(plink.matrix, rownames="A") %>%
-    pivot_longer(-A,names_to = "B", values_to = "distances") 
-
-view(plink.dist.df)
+```{r}
+p <- ggtree(nj_tree)
+p %<+% metadata +
+    # Add labels to the tips from the metadata
+    geom_tippoint(aes(color = Clade), size = 3) +
+    # Manually, highlight some some interesting regions
+    geom_cladelabel(node = 37, label = "South", offset = 200) +
+    # Highlight another regions. Notice that, by selecting the node
+    # we are selecting all "descendents"
+    geom_hilight(node = 22, fill = "grey", alpha = 0.5) +
+    theme_tree() +
+    theme(legend.position = "bottom") +
+    ggtitle("Annotated phylogenetic tree")
 ```
 
-Finally we get to plot the distance matrix! We will use a heatmap to
-represent our distance matrix, encoded by the **geom_tile()** command in
-ggplot2.
+## Plotting genomic Principal Component Analysis (PCA)
 
-``` r
-plink.dist.df %>%
-  ggplot(aes(x=A, y=B, fill=distances)) +
-  geom_tile()
+PCA is a dimensionality reduction method we can use to visualize the genomic differences among individuals. First, we have to load the plink PCA output.
+
+```{r}
+eigenvalues <- as.numeric(read_lines("pca_maf_0.05.eigenval"))
+eigenvectors <- read_delim("pca_maf_0.05.eigenvec", col_names = FALSE)
+eigenvectors
 ```
 
-However, we can already see that this plot has several issues: The tiles
-are drawn as rectangles, the colour scheme is not optimal, the axes are
-not properly labeled and still have axis lines and the x’x axis labels
-are not readable due to their angle. We can mitigate all these issues by
-manipulating these elements with additional commands:
+## Percentage of variance explained
 
-``` r
-plink.dist.df %>%
-  ggplot(aes(x=A, y=B, fill=distances)) +
-  geom_tile()+
-  coord_equal()+ #making the tiles into squares
-  scale_fill_gradient(low = "#FF0000", high = "#FFFFFF", name=NULL) + #changing the colour scheme
-  labs(x="Samples", y="Samples") + #changing axis labels
-  theme_classic()+ #gets rid of the grey background of the base ggplot2 theme
-  theme(axis.line = element_blank(), #removes axes lines and ticks
-        axis.ticks = element_blank(),
-        axis.text = element_text(size=8), #changes the font size
-        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) #rotates x axis labels by 90 degrees to make them readable
+```{r}
+variance_explained <- eigenvalues / sum(eigenvalues) * 100
+variance_explained
 ```
 
-### Making and plotting a neighbour-joining (NJ) tree
+## Tidy the eigenvectors
 
-In this part of the tutorial we will make use of the genomic pairwise
-distance matrix to create a phylogenetic tree of our samples. While
-there are multiple algorithms, we will use the simplest one called
-“neighbour-joining”. To build the NJ tree we will use the package
-**ape** and more specifically its **nj()** function.
+Let's tidy the table:
 
-``` r
-NJ.tree <- ape::nj(plink.matrix)
+```{r, echo=TRUE}
+pca_data <- eigenvectors %>%
+    mutate(
+        # Extract the filename from the full path in column X1
+        basename = basename(X1),
+        # Remove the ".sorted.bam" extension to get the sample identifier
+        Sample_ID = str_remove(basename, ".sorted.bam"),
+        # Assign principal component values (assuming X3 and X4 are PC1 and PC2)
+        PC1 = X3,
+        PC2 = X4
+    ) |>
+    # Select only the relevant columns for PCA visualization
+    select(Sample_ID, PC1, PC2) %>%
+    # Merge PCA results with metadata to add sample information
+    left_join(metadata, by = "Sample_ID")
+glimpse(pca_data)
 ```
 
-Let’s see how our tree looks. Basic plots of the trees can be done
-through using the ape package:
+## Visualize the PCA
 
-``` r
-#Plot the unrooted NJ tree
-plot(x=NJ.tree, type="unrooted", cex=0.5)
-
-#Plot a rooted NJ tree
-plot(x=NJ.tree)
+```{r, echo=TRUE, eval=FALSE}
+pca_data %>%
+    ggplot(aes(x = PC1, y = PC2, color = Clade)) +
+    geom_hline(yintercept = 0, linetype = "dotted") + # Horizontal line at y = 0
+    geom_vline(xintercept = 0, linetype = "dotted") + # Vertical line at x = 0
+    geom_point(size = 2, alpha = 0.8) +
+    theme_minimal() +
+    labs(
+        title = "Principal component analysis",
+        x = paste0("Principal Component 1 (", sprintf("%.2f", variance_explained[[1]]), "%)"),
+        y = paste0("Principal Component 2 (", sprintf("%.2f", variance_explained[[2]]), "%)"),
+        color = "Population"
+    ) +
+    theme(legend.position = "bottom")
 ```
 
-However, we may wish to “decorate” our tree by highlighting specific
-edges or clusters based on our metadata file. In order to do that, we
-first have to save our tree in a file in our working directory. A simple
-tree file format is the Newick format:
+## Visualize the PCA
 
-``` r
-write.tree(NJ.tree, file = "NJ.tree.nwk", append = FALSE,
-           digits = 10, tree.names = FALSE)
+```{r}
+pca_data %>%
+    ggplot(aes(x = PC1, y = PC2, color = Clade)) +
+    geom_hline(yintercept = 0, linetype = "dotted") + # Horizontal line at y = 0
+    geom_vline(xintercept = 0, linetype = "dotted") + # Vertical line at x = 0
+    geom_point(size = 2, alpha = 0.8) +
+    theme_minimal() +
+    labs(
+        title = "Principal component analysis",
+        x = paste0("Principal Component 1 (", sprintf("%.2f", variance_explained[[1]]), "%)"),
+        y = paste0("Principal Component 2 (", sprintf("%.2f", variance_explained[[2]]), "%)"),
+        color = "Population"
+    ) +
+    theme(legend.position = "bottom")
 ```
 
-Now let’s load our tree into R and use the ggtree package to modify and
-decorate our NJ tree:
+## ADMIXTURE plot
 
-``` r
-tree <- read.tree("Path_to_working_directory\\NJ.tree.nwk")
-```
+ADMIXTURE produced 2 files: `.Q` which contains cluster assignments for each individual and `.P` which contains for each SNP the population allele frequencies. We are interested in the `.Q` files.
 
-The ggtree package introduces a dedicated **geom_tree()** function to
-plot trees in ggplot2. There are multiple ways to plot our tree, as seen
-below:
-
-``` r
-ggplot(tree) + geom_tree() + geom_tiplab()
-ggtree(tree, layout="roundrect")+ geom_tiplab()
-ggtree(tree, layout="slanted")+ geom_tiplab()
-ggtree(tree, layout="ellipse")+ geom_tiplab()
-ggtree(tree, layout="circular")+ geom_tiplab()
-ggtree(tree, layout="fan", open.angle=120)+ geom_tiplab()
-ggtree(tree, layout="equal_angle")+ geom_tiplab()
-ggtree(tree, layout="daylight")+ geom_tiplab()
-ggtree(tree, branch.length='none')+ geom_tiplab()
-ggtree(tree, layout="ellipse", branch.length="none")+ geom_tiplab()
-ggtree(tree, branch.length='none', layout='circular')+ geom_tiplab()
-ggtree(tree, layout="daylight", branch.length = 'none')+ geom_tiplab()
-```
-
-As you can see different tree types can be used to convey different
-types of information. For the rest of this tutorial we will focus on the
-so-called “phylograms”. These phylograms show the evolutionary
-relationships with respect to the evolutionary time and the amount of
-change between time. An important step in annotating our tree is to find
-the node labels (which are numbered). These can be performed using the
-following code:
-
-``` r
-ggplot(tree) + geom_tree() + theme_tree()+ geom_tiplab()
-
-ggtree(tree)+ geom_text(aes(label=node), hjust=-.3) #This shows node labels
-```
-
-Now that we know the node labels, we can try and highlight some clades
-from our metadata file that cluster together in the NJ tree. Let’s try
-to highlight the North clade. First we need to visually inspect our tree
-to discover which is the node of the most recent common ancestor of the
-clade we wish to highlight. Then we run the following code:
-
-``` r
-ggtree(tree) + 
-  geom_tiplab() + 
-  geom_cladelabel(node=28, label="North", 
-                  color="blue", offset=.8, align=TRUE) + 
-  theme_tree2() + #cleaner tree theme
-  xlim(0, 70) + #increasing x axis maximum to help with label alignment
-  theme_tree()
-```
-
-This code added lines to the side indicating the labels associated with
-a specific clade from our metadata. However, it may be easier to
-highlight the entire clade on the tree. This can be performed using the
-following code:
-
-``` r
-ggtree(tree) + 
-  geom_tiplab() + 
-   geom_hilight(node=28, fill="purple") +
-  geom_cladelabel(node=28, label="North", 
-                  color="blue", offset=.8, align=TRUE) + 
-  theme_tree2() + #cleaner tree theme
-  xlim(0, 70) + #increasing x axis maximum to help with label alignment
-  theme_tree()
-```
-
-Try to use the code above to highlight the another clade from the
-metadata file in the tree.
-
-### Plotting genomic Principal Component Analysis (PCA)
-
-Another useful analysis performed using the pairwise distance matrix is
-the PCA. This is a dimensionality reduction method, allowing us to
-summarise the n-dimensional variation of the pairwise distance matrix
-with created dimensions (usually 2) explaining as much of the variation
-as possible. Let’s use the plink PCA output files to plot the two axes
-explaining most of the genomic variation in our samples.
-
-Firstly we need to load the plink output files and the metadata file
-into R:
-
-``` r
-#Reading in the .eigenvec and .eigenval files
-eigenvec <- read_delim("Path_to_working_directory\\chr15.eigenvec", delim = " ", col_names = FALSE)
-eigenval <- read_delim("Path_to_working_directory\\chr15.eigenval", delim = " ", col_names = FALSE)
-
-#Loading the metadata file
-metadata <- read.csv(file = "Path_to_working_directory\\hc_metadata.csv")
-```
-
-Next, let’s calculate how much variation does each principal axis
-explain. We will use the eigenvalues with a simple percentage
-calculation mathematical formula:
-
-``` r
-eigenvalue_percent <- round((eigenval$X1/sum(eigenval$X1))*100)
-```
-
-We will also add the population of origin of each sample from the
-metadata to the eigenvector dataframe by creating an additional column.
-This will help with colouring the sample points later on:
-
-``` r
-eigenvec$population <- metadata$Population
-```
-
-Finally, it’s time to plot the PCA using ggplot2. Plotting the PCA is
-essentially a scatter plot where the coordinates for each point are
-given by the eigenvectors of each principal axis. Since we are plotting
-the first to axes, we will use the first two eigenvectors (columns X3
-and X4 of the dataframe). We will also use the population column to
-colour our points:
-
-``` r
-ggplot(data = eigenvec) +
-  geom_point(mapping = aes(x = X3, y = X4, colour=population), size = 3, show.legend = TRUE ) +
-  geom_hline(yintercept = 0, linetype="dotted") + #horizontal line with y=0
-  geom_vline(xintercept = 0, linetype="dotted") + #vertical line with x=0
-  labs(title = "PCA of selected H. capensis populations",
-       x = paste0("Principal component 1 (",eigenvalue_percent[[1]]," %)"),
-       y = paste0("Principal component 2 (",eigenvalue_percent[[2]]," %)"), 
-       colour = "Population") +#adding the percent variance explained colouring the points
-  theme_minimal() #removes gray background of ggplot
-```
-
-### ADMIXTURE plot
-
-The first step in plotting the results of ADMIXTURE is to load the
-sample names and the ADMIXTURE results for each K. In order to load the
-results faster we will use a for loop that reads the specific naming
-pattern of the .Q files and loads them in a list of dataframes:
-
-``` r
-samples<-read.table("Path_to_working_directory\\chr15.fam")[,1]
-
-#read in all runs and save each dataframe in a list
-runs<-list()
-#read in log files
-for (i in 1:6){
-  runs[[i]]<-read.table(paste0("chr15.maf0p05.", i+1, ".Q")) #This is a way of loading multiple files using a series of numbers in the file name
+```{r, echo=TRUE}
+# Process data into a "tidy" long format
+read_and_tidy_admixture <- function(file) {
+    read_delim(file, col_names = F) %>%
+        mutate(Sample_ID = metadata$Sample_ID) %>%
+        pivot_longer(-Sample_ID, values_to = "Proportion", names_to = "pop_group") %>%
+        mutate(
+            index = as.numeric(str_remove(pop_group, "X")),
+            K = max(index),
+            pop_group = as.factor(index)
+        )
 }
-```
-
-We then prepare our graphics device. It is useful to plot all 6 .Q files
-in the same window, so we manipulate the graphics device settings. We
-also load a colourblind-friendly palette to use for colouring the
-samples’ ancestry estimates:
-
-``` r
-par(mar = c(7, 4, 2, 2) + 0.2) #add room for the rotated labels
-par(mfrow = c(2,3)) #this allows for plotting six plots in one window
-palt <- palette.colors(NULL, "Okabe-Ito")
-```
-
-Now we use a for loop to plot all the results at the same time. For
-plotting we will use **barplot()**, which is the base R command for
-creating barplots and behaves exactly like the basic **plot** command we
-showed before:
-
-``` r
-for(i in 1:6){
-  barplot(t(as.matrix(runs[[i]])),xlim = c(0,10), width=0.4,main = paste0("K=", i+1), col=palt[c(2:i+2)], ylab="Ancestry", border="black", names.arg = samples, las=2)
+# More R-style with a bit of regex ...
+data_admix <- list.files(pattern = "*.Q") %>%
+    map(read_and_tidy_admixture) %>%
+    bind_rows()
+# Otherwise ...
+runs <- list()
+# read in log files
+for (i in 1:6) {
+    runs[[i]] <- read_and_tidy_admixture(
+        paste0("chr17.filtered.geno.", i + 1, ".Q")
+    )
 }
+data_admix <- bind_rows(data_admix)
 ```
 
-Using the above code, each run is plotted with a main title showing the
-number of K clusters of that run. K colours are chosen from the
-Okabe-Ito pallette to colour the clusters and each sample receives a
-label based on the sample labels we loaded in the first step. Finally,
-with **las=2** the labels are rotated by 90 degrees.
+## Admixture plot
 
-In order to make the clustering more obvious, let’s re-arrange the
-samples on the graphs based on their cluster assignment. The proper way
-to do this is to use the cluster assignments in the cluster with the
-smallest cross-validation error. However, since we have not calculated
-this, we will use the K=7 cluster assignment. We manually select the
-order of sample we wish to have and then apply it to our list of result
-dataframes using a for loop. We also re-arrange the sample label
-dataframe. For the example chromosome 15 the assignments were the
-following:
-
-``` r
-for(i in 1:6){
-  runs[[i]]<-runs[[i]][c(1:4,5:6,15,7:11,12,16,19,13,17,14,18,20),]
-}
-
-samples_reorganized <- samples[c(1:4,5:6,15,7:11,12,16,19,13,17,14,18,20),]
+```{r, echo=TRUE, eval=FALSE}
+data_admix %>%
+    ggplot(aes(x = Sample_ID, y = Proportion, fill = pop_group)) +
+    geom_col() +
+    facet_wrap(~K) +
+    scale_fill_brewer(palette = "Set1", name = "Population Group") +
+    theme_classic() +
+    theme(
+        legend.position = "none",
+        axis.text.x = element_text(size = 5, angle = 90, hjust = 1, vjust = 0.5)
+    ) +
+    labs(
+        x = "Sample ID",
+        y = "Ancestry Proportion",
+        title = "ADMIXTURE Ancestry Proportions"
+    )
 ```
 
-We then plot the results again, using the re-arranged samples:
+## Admixture plot
 
-``` r
-for(i in 1:6){
-  barplot(t(as.matrix(runs[[i]])),xlim = c(0,10), width=0.4,main = paste0("K=", i+1), col=palt[c(2:i+2)], ylab="Ancestry", border="black", names.arg = samples_reorganized, las=2)
-}
+```{r}
+data_admix %>%
+    ggplot(aes(x = Sample_ID, y = Proportion, fill = pop_group)) +
+    geom_col() +
+    facet_wrap(~K) +
+    scale_fill_brewer(palette = "Set1", name = "Population Group") +
+    theme_classic() +
+    theme(
+        legend.position = "none",
+        axis.text.x = element_text(size = 5, angle = 90, hjust = 1, vjust = 0.5)
+    ) +
+    labs(
+        x = "Sample ID",
+        y = "Ancestry Proportion",
+        title = "ADMIXTURE Ancestry Proportions"
+    )
 ```
 
-### Plotting the Fst results
-
-The first step is to load the Fst results onto R:
-
-``` r
-fst <- read_tsv("Path_to_working_directory\\chr15.windowed.weir.fst")
-str(fst)
-```
-
-The next step is to transform the chromosome position from bp to Mb with
-a simple division:
-
-``` r
-#Plotting Fst for one chromosome
-fst$BIN_START=fst$BIN_START/1E6
-fst$BIN_END=fst$BIN_END/1E6
-```
-
-Finally, we plot the results for each chromosome separately using a
-ggplot2 scatterplot:
-
-``` r
-fst_plot<-ggplot(fst) + 
-  geom_point(aes(x=BIN_START, y=WEIGHTED_FST))+
-  ggtitle("Fst-Chromosome 15") + #title of graph
-  xlab(paste("Mb Chromosome ",15,sep="") ) + #x'x axis label
-  ylab(expression(F[ST])) + #y'y axis label
-  theme_minimal() 
-fst_plot
-```
+## Plotting the Fst results
